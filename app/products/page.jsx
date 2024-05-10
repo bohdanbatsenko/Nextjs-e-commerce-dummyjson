@@ -14,25 +14,52 @@ import Button from '../../components/Button';
 
 export function ProductsPage() {
   const router = useRouter()
+  const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [ filter, setFilter ] = useState('All')
+  const [ filterCat, setFilterCat ] = useState('')
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext)
   const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
 
-  async function getProducts() {
-    const response = await fetch('https://dummyjson.com/products')
+  const getAllProducts = async() => {
+    const response = await fetch('https://dummyjson.com/products?limit=100')
     const data = await response.json()
     // Check if data is an array before setting it to the state
     if (Array.isArray(data)) {
-      setFilteredProducts(data);
+     return data.products;
     } else {
       // If data is an object with a 'products' array inside it
-      setFilteredProducts(data.products || []);
+      return (data.products || []);
+    }
+    //return data.products;
+  }
+
+  const getProducts = async() => {
+    const products = await getAllProducts()
+    if (products) {
+      // Check if data is an array before setting it to the state
+      if (Array.isArray(products)) {
+        setProducts(products);
+      } else {
+        // If data is an object with a 'products' array inside it
+        setProducts(products || []);
+      }
     }
   }
+
   useEffect(() => {
     getProducts()
   }, [])
+
+  useEffect(() => {
+    const getFilteredProducts = async() => {
+      const products = await getAllProducts()
+      const filteredProductsByCategory = products.filter(prod => prod.category === filterCat)
+      setFilteredProducts(filteredProductsByCategory)
+    }
+    if (filterCat) {
+      getFilteredProducts()
+    }
+  }, [filterCat])
 
     const handleRemoveFromCart = (product) => {
       removeFromCart(product);
@@ -41,7 +68,7 @@ export function ProductsPage() {
 
     const filterHandler = (category) => {
       console.log(category);
-      setFilter(category)
+      setFilterCat(category)
     }
 
   return <>
@@ -58,7 +85,7 @@ export function ProductsPage() {
       <div className='lg:col-span-4'>
         <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-10'>
   {
-      filteredProducts.map(product => (
+      (filteredProducts.length > 0 ? filteredProducts : products).map(product => (
         <div key={product.id} className='bg-white shadow-md rounded-lg px-10 py-10 flex flex-col justify-between'>
           <Image src={product.thumbnail} width={300} height={200} alt={product.title} className='rounded-md h-48' />
           <div className='mt-4'>
@@ -95,9 +122,7 @@ export function ProductsPage() {
               </div>
               )
             }
-            {/* <button type="button" onClick={() => router.push(`/products/${product.id}`)}>
-              View details
-            </button> */}
+
             <Link
               href={{
                 pathname: "products/product",
