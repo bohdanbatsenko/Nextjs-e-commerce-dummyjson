@@ -27,11 +27,11 @@ return (
 
     {/* Desktop Navigation */}
     <nav className={classes.nav}>
-    <ul className='hidden md:flex'>
-      <li><NavLink href="/">Home</NavLink></li>
-      <li><NavLink href="/products">Products</NavLink></li>
-      <li><NavLink href="/products/cart">Cart</NavLink></li>
-    </ul>
+      <ul className='hidden md:flex'>
+        <li><NavLink href="/">Home</NavLink></li>
+        <li><NavLink href="/products">Products</NavLink></li>
+        <li><NavLink href="/products/cart">Cart</NavLink></li>
+      </ul>
     </nav>
 
     {/* Mobile Navigation Icon */}

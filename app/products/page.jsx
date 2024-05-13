@@ -86,7 +86,7 @@ export function ProductsPage() {
         <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-10'>
   {
       (filteredProducts.length > 0 ? filteredProducts : products).map(product => (
-        <div key={product.id} className='bg-white shadow-md rounded-lg px-10 py-10 flex flex-col justify-between'>
+        <div key={product.id} className='bg-white shadow-md rounded-lg px-5 py-5 flex flex-col justify-between'>
           <Image src={product.thumbnail} width={300} height={200} alt={product.title} className='rounded-md h-48' />
           <div className='mt-4'>
             <h1 className='text-lg uppercase font-bold'>
