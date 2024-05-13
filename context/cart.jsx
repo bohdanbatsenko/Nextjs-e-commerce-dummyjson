@@ -4,7 +4,12 @@ import { createContext, useState, useEffect } from 'react'
 export const CartContext = createContext() 
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [])
+  const [cartItems, setCartItems] = useState(
+    window.localStorage.getItem('cartItems') 
+    ? JSON.parse(window.localStorage.getItem('cartItems')) 
+    : []
+    )
+  //const [cartItems, setCartItems] = useState([])
 
   const addToCart = (item) => {
     const isItemInCart = cartItems.find((cartItem) => cartItem.id === item.id); // check if the item is already in the cart
@@ -47,14 +52,14 @@ export const CartProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const cartItems = localStorage.getItem("cartItems");
+    const cartItems = window.localStorage.getItem("cartItems");
     if (cartItems) {
     setCartItems(JSON.parse(cartItems));
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    window.localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   return (
