@@ -4,19 +4,12 @@ import { createContext, useState, useEffect } from 'react'
 export const CartContext = createContext() 
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(
-    // localStorage.getItem('cartItems') 
-    // ? JSON.parse(localStorage.getItem('cartItems')) 
-    // : []
-    []
-    )
-    //const [cartItems, setCartItems] = useState([])
+  const [cartItems, setCartItems] = useState([])
 
-    useEffect(() => {
-      const localStorageCarts = localStorage.getItem('cartItems')
-      if(localStorageCarts) setCartItems(JSON.parse(localStorageCarts))
-    }, [])
-
+  useEffect(() => {
+    const localStorageCarts = localStorage.getItem('cartItems')
+    if(localStorageCarts) setCartItems(JSON.parse(localStorageCarts))
+  }, [])
 
   const addToCart = (item) => {
     const isItemInCart = cartItems.find((cartItem) => cartItem.id === item.id); // check if the item is already in the cart
@@ -57,13 +50,6 @@ export const CartProvider = ({ children }) => {
   const getCartTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0); // calculate the total price of the items in the cart
   };
-
-  // useEffect(() => {
-  //   const storedCartItems = localStorage.getItem("cartItems");
-  //   if (storedCartItems) {
-  //     setCartItems(JSON.parse(storedCartItems));
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (cartItems.length > 0) localStorage.setItem("cartItems", JSON.stringify(cartItems));
