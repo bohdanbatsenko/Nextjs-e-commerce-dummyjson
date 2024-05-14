@@ -2,52 +2,26 @@
 import { useContext } from 'react'
 import { CartContext } from '../../../context/cart'
 import { CartProvider } from '../../../context/cart';
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
+import { toasterNotifier } from '@/hooks/useToasterNotify';
 import 'react-toastify/dist/ReactToastify.css'
 
 export function Cart() {
   const { cartItems, addToCart, removeFromCart, clearCart, getCartTotal } = useContext(CartContext)
+  const { notifyRemovedFromCart, notifyCartCleared } = toasterNotifier()
 
-  const notifyRemovedFromCart = (item) => toast.error(`${item.title} removed from cart!`, {
-    position: 'top-center',
-    autoClose: 2000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    theme: 'colored',
-    style: {
-      backgroundColor: '#000',
-      color: '#fff'
-    }
-  })
-
-  const notifyCartCleared = () => toast.error(`Cart cleared!`, {
-    position: 'top-center',
-    autoClose: 2000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    theme: 'colored',
-    style: {
-      backgroundColor: '#000',
-      color: '#fff'
-    }
-  })
-
-  const handleRemoveFromCart = (product) => {
+    const handleRemoveFromCart = (product) => {
     removeFromCart(product)
     notifyRemovedFromCart(product)
   }
 
-
   return (
     <>
       <div className="flex-col flex items-center bg-white gap-8 p-10 text-black text-sm">
+      <ToastContainer />
       <h1 className="text-2xl font-bold">Cart</h1>
       <div className="flex flex-col gap-4">
-        {cartItems.map((item) => (
+        {cartItems && cartItems.map((item) => (
           <div className="flex justify-between items-center" key={item.id}>
             <div className="flex gap-4">
               <img src={item.thumbnail} alt={item.title} className="rounded-md h-24" />
@@ -84,7 +58,7 @@ export function Cart() {
         ))}
       </div>
       {
-        cartItems.length > 0 ? (
+        cartItems ? (
           <div className="flex flex-col justify-between items-center">
         <h1 className="text-lg font-bold">Total: ${getCartTotal()}</h1>
         <button

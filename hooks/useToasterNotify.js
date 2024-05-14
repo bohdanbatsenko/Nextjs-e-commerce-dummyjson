@@ -30,8 +30,23 @@ export const toasterNotifier = () => {
     }
   });
 
+  const notifyCartCleared = () => toast.error(`Cart cleared!`, {
+    position: 'top-center',
+    autoClose: 2000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    theme: 'colored',
+    style: {
+      backgroundColor: '#000',
+      color: '#fff'
+    }
+  })
+
   return {
     notifyAddedToCart,
-    notifyRemovedFromCart
+    notifyRemovedFromCart,
+    notifyCartCleared
   }
 }

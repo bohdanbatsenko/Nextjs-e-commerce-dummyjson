@@ -1,16 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import classes from './page.module.css'
-import Filters from '../../components/Filters';
+import './page.module.css'
+import Filters from '@/components/Filters';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useContext } from "react";
-import { CartProvider } from '../../context/cart';
-import { CartContext } from '../../context/cart';
+import { CartProvider } from '@/context/cart';
+import { CartContext } from '@/context/cart';
 import { ToastContainer } from 'react-toastify';
-import { toasterNotifier } from '../../hooks/useToasterNotify';
-import Button from '../../components/Button';
+import { toasterNotifier } from '@/hooks/useToasterNotify';
+import Button from '@/components/Button';
 
 export function ProductsPage() {
   const router = useRouter()
@@ -19,6 +19,8 @@ export function ProductsPage() {
   const [ filterCat, setFilterCat ] = useState('')
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext)
   const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
+  const [page, setPage] = useState(1)
+  //const [limit, setLimit] = useState(5)
 
   const getAllProducts = async() => {
     const response = await fetch('https://dummyjson.com/products?limit=100')
@@ -71,6 +73,15 @@ export function ProductsPage() {
       setFilterCat(category)
     }
 
+    const handlePageChange = (pageNumber) => {
+      if (
+        pageNumber > 0 &&
+        pageNumber <= products.length &&
+        pageNumber !== page
+      )
+        setPage(pageNumber);    
+    };
+
   return <>
     <div className='flex flex-col justify-center bg-gray-100'>
     <ToastContainer />
@@ -85,7 +96,11 @@ export function ProductsPage() {
       <div className='lg:col-span-4'>
         <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-10'>
   {
-      (filteredProducts.length > 0 ? filteredProducts : products).map(product => (
+      (filteredProducts.length > 0 ? filteredProducts
+          .slice(page * 4 - 4, page * 4)
+        : products
+          .slice(page * 4 - 4, page * 4))
+          .map(product => (
         <div key={product.id} className='bg-white shadow-md rounded-lg px-5 py-5 flex flex-col justify-between'>
           <Image src={product.thumbnail} width={300} height={200} alt={product.title} className='rounded-md h-48' />
           <div className='mt-4'>
@@ -137,11 +152,42 @@ export function ProductsPage() {
       ))
     }
         </div>
+
+        {products.length > 0 && (
+        <section className="pagination">
+          <Button
+            onClick={() => handlePageChange(page - 1)}
+            className={`arrow ${page === 1 ? "pagination__disabled" : ""}`}
+          >
+            {"<"}
+          </Button>
+          {[...Array(Math.floor(products.length / 4))].map((_, i) => (
+            <span
+              className={`page__number cursor-pointer relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
+                page === i + 1 ? "selected__page__number" : ""
+              }`}
+              style={page === i + 1 ? { backgroundColor: 'black', color: 'white' } : {}}
+              key={i + 1}
+              onClick={() => handlePageChange(i + 1)}
+            >
+              {i + 1}
+            </span>
+          ))}
+          <Button
+            onClick={() => handlePageChange(page + 1)}
+            className={`arrow ${
+              page === Math.floor(products.length / 4)
+                ? "pagination__disabled"
+                : ""
+            }`}
+          >
+            {">"}
+          </Button>
+        </section>
+      )}
+
       </div>
     </div>
-
-
-
 </div>
   </>
       

@@ -5,11 +5,18 @@ export const CartContext = createContext()
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(
-    window.localStorage.getItem('cartItems') 
-    ? JSON.parse(window.localStorage.getItem('cartItems')) 
-    : []
+    // localStorage.getItem('cartItems') 
+    // ? JSON.parse(localStorage.getItem('cartItems')) 
+    // : []
+    []
     )
-  //const [cartItems, setCartItems] = useState([])
+    //const [cartItems, setCartItems] = useState([])
+
+    useEffect(() => {
+      const localStorageCarts = localStorage.getItem('cartItems')
+      if(localStorageCarts) setCartItems(JSON.parse(localStorageCarts))
+    }, [])
+
 
   const addToCart = (item) => {
     const isItemInCart = cartItems.find((cartItem) => cartItem.id === item.id); // check if the item is already in the cart
@@ -52,14 +59,14 @@ export const CartProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const cartItems = window.localStorage.getItem("cartItems");
-    if (cartItems) {
-    setCartItems(JSON.parse(cartItems));
+    const storedCartItems = localStorage.getItem("cartItems");
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
     }
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   return (
