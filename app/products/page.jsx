@@ -20,7 +20,7 @@ export function ProductsPage() {
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext)
   const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
   const [page, setPage] = useState(1)
-  //const [limit, setLimit] = useState(5)
+  const [limit, setLimit] = useState(8)
 
   const getAllProducts = async() => {
     const response = await fetch('https://dummyjson.com/products?limit=100')
@@ -97,9 +97,9 @@ export function ProductsPage() {
         <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-10'>
   {
       (filteredProducts.length > 0 ? filteredProducts
-          .slice(page * 4 - 4, page * 4)
+          .slice(page * limit - limit, page * limit)
         : products
-          .slice(page * 4 - 4, page * 4))
+          .slice(page * limit - limit, page * limit))
           .map(product => (
         <div key={product.id} className='bg-white shadow-md rounded-lg px-5 py-5 flex flex-col justify-between'>
           <Image src={product.thumbnail} width={300} height={200} alt={product.title} className='rounded-md h-48' />
@@ -153,7 +153,7 @@ export function ProductsPage() {
     }
         </div>
 
-        {products.length > 0 && (
+      {products.length > 8 && (
         <section className="pagination">
           <Button
             onClick={() => handlePageChange(page - 1)}
@@ -161,7 +161,7 @@ export function ProductsPage() {
           >
             {"<"}
           </Button>
-          {[...Array(Math.floor(products.length / 4))].map((_, i) => (
+          {[...Array(Math.floor(products.length / limit))].map((_, i) => (
             <span
               className={`page__number cursor-pointer relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
                 page === i + 1 ? "selected__page__number" : ""
@@ -176,7 +176,7 @@ export function ProductsPage() {
           <Button
             onClick={() => handlePageChange(page + 1)}
             className={`arrow ${
-              page === Math.floor(products.length / 4)
+              page === Math.floor(products.length / limit)
                 ? "pagination__disabled"
                 : ""
             }`}
