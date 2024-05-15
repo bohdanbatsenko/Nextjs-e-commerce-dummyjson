@@ -9,7 +9,9 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
     const localStorageCarts = localStorage.getItem('cartItems')
-    if(localStorageCarts) setCartItems(JSON.parse(localStorageCarts))
+      if(localStorageCarts) {
+        setCartItems(JSON.parse(localStorageCarts))
+      }
   }
   }, [])
 
@@ -46,7 +48,8 @@ export const CartProvider = ({ children }) => {
   };
 
   const clearCart = () => {
-    setCartItems([]); // set the cart items to an empty array
+    setCartItems([]);
+    if (typeof window !== "undefined") localStorage.setItem("cartItems", JSON.stringify([]));
   };
 
   const getCartTotal = () => {

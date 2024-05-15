@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 
-const Filters = ({handleOnClick, value}) => {
+const Filters = () => {
   const [ categories, setCategories ] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState('all'); 
+  //const [selectedCategories, setSelectedCategories] = useState([]); 
 
-  const handleCheckboxChange = (event) => {
-    setSelectedCategory(event.target.value);
-    handleOnClick(event.target.value)
-  };
+  // const handleCheckboxChange = (event) => {
+  //   setSelectedCategories(event.target.value);
+  //   handleOnClick(event.target.value)
+  // };
   // const handleCheckboxAllChange = () => {
   //   setIsChecked(!isChecked);
   // }
@@ -23,20 +23,35 @@ const Filters = ({handleOnClick, value}) => {
       setCategories(data.categories || []);
     }
   }
+
+  // const addCategory = (category) => {
+  //   if(!selectedCategories.includes(category)){
+  //       setSelectedCategories(prev => ([...prev, category]))
+  //   }     
+  // }
+
+  // const removeCategory = (category) => {
+  //   if(selectedCategories.includes(category)){
+  //       const removedList = selectedCategories.filter((item) => (item !== category));
+  //       setSelectedCategories(removedList);
+  //   }
+  // }
+
   useEffect(() => {
     getCategories()
   }, [])
 
+
+
   return <div>
-    <div className='mb-2'>
-      {/* <Button onClick={() => handleOnClick('all')}>All</Button> */}
+    {/* <div className='mb-2'>
       <div className="flex items-center">
         <input 
           type="radio" 
           name="category"
           value="all"
           className="w-5 h-5"
-          checked={selectedCategory === 'all'}
+          checked={selectedCategories === 'all'}
           onChange={handleCheckboxChange}
           />
         <label htmlFor="radio"
@@ -44,18 +59,27 @@ const Filters = ({handleOnClick, value}) => {
           <span className="w-2.5 h-2.5">All</span>
         </label>
       </div>
+      </div> */}
 
+    {categories.map((category) => (
+      <div key={category}> 
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" value={category} id={category} />
+            <label className="form-check-label" htmlFor={category}>
+            {category}     
+            </label>
+          </div> 
       </div>
-    {categories.map((category, idx) => (
+     ))}
+
+    {/* {categories.map((category, idx) => (
       <div key={`${category}-${idx}`} className='mb-2'>
-      {/* <Button onClick={() => handleOnClick(category)}>{category}</Button> */}
-      
       <div className="flex items-center">
         <input 
           type="radio" 
           name={category}
           className="w-5 h-5"
-          checked={selectedCategory === category}
+          checked={selectedCategories === category}
           value={category}
           onChange={handleCheckboxChange}
           />
@@ -66,7 +90,8 @@ const Filters = ({handleOnClick, value}) => {
       </div>
 
       </div>
-    ))}
+    ))} */}
+
   </div>
 
 }

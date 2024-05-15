@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import './page.module.css'
-import Filters from '@/components/Filters';
+//import Filters from '@/components/Filters';
 import Link from 'next/link';
+
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useContext } from "react";
 import { CartProvider } from '@/context/cart';
@@ -16,36 +17,57 @@ export function ProductsPage() {
   const router = useRouter()
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [ filterCat, setFilterCat ] = useState('')
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext)
   const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(8)
 
-  const getAllProducts = async() => {
-    const response = await fetch('https://dummyjson.com/products?limit=100')
-    const data = await response.json()
-    // Check if data is an array before setting it to the state
-    if (Array.isArray(data)) {
-     return data.products;
-    } else {
-      // If data is an object with a 'products' array inside it
-      return (data.products || []);
+
+  const addCategory = (category) => {
+    if(!selectedCategories.includes(category)){
+        setSelectedCategories(prev => ([...prev, category]))
+    }     
+  }
+  
+  const removeCategory = (category) => {
+    if(selectedCategories.includes(category)){
+        const removedList = selectedCategories.filter((item) => (item !== category));
+        setSelectedCategories(removedList);
     }
-    //return data.products;
   }
 
-  const getProducts = async() => {
-    const products = await getAllProducts()
-    if (products) {
-      // Check if data is an array before setting it to the state
-      if (Array.isArray(products)) {
-        setProducts(products);
-      } else {
-        // If data is an object with a 'products' array inside it
-        setProducts(products || []);
-      }
-    }
+  const handleReset = () => {
+    console.log('handle Reset')
+    setSelectedCategories([]);
+    setFilteredProducts(products);
+  }
+
+  const getCategories = () => { 
+    fetch('https://dummyjson.com/products/categories')
+    .then(res => res.json())  
+    .then((data) => {
+      setCategories(data);
+    })  
+    .catch((err) => console.log(err));
+  }
+  
+  useEffect(() => {
+    getCategories() 
+    }, [])
+
+  const getProducts = () => {
+    fetch('https://dummyjson.com/products?limit=100')
+    .then(res => res.json()) 
+    .then((data) => {
+      if (data.products && data.products.length) {
+        setProducts(data.products);
+        setFilteredProducts(data.products);
+      };
+    })  
+
+    .catch((err) => console.log(err));
   }
 
   useEffect(() => {
@@ -53,34 +75,30 @@ export function ProductsPage() {
   }, [])
 
   useEffect(() => {
-    const getFilteredProducts = async() => {
-      const products = await getAllProducts()
-      const filteredProductsByCategory = products.filter(prod => prod.category === filterCat)
-      setFilteredProducts(filteredProductsByCategory)
+    if(selectedCategories.length === 0){
+      setFilteredProducts(products);
+    } else{
+      setFilteredProducts(
+        products.filter(
+        (item) => selectedCategories.includes(item.category)
+        )
+      );
     }
-    if (filterCat) {
-      getFilteredProducts()
-    }
-  }, [filterCat])
+  }, [selectedCategories, products])
 
-    const handleRemoveFromCart = (product) => {
-      removeFromCart(product);
-      notifyRemovedFromCart(product);
-    };
+  const handleRemoveFromCart = (product) => {
+    removeFromCart(product);
+    notifyRemovedFromCart(product);
+  };
 
-    const filterHandler = (category) => {
-      console.log(category);
-      setFilterCat(category)
-    }
-
-    const handlePageChange = (pageNumber) => {
-      if (
-        pageNumber > 0 &&
-        pageNumber <= products.length &&
-        pageNumber !== page
-      )
-        setPage(pageNumber);    
-    };
+  const handlePageChange = (pageNumber) => {
+    if (
+      pageNumber > 0 &&
+      pageNumber <= products.length &&
+      pageNumber !== page
+    )
+      setPage(pageNumber);    
+  };
 
   return <>
     <div className='flex flex-col justify-center bg-gray-100'>
@@ -91,14 +109,42 @@ export function ProductsPage() {
 
     <div className='grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5 px-20'>
       <div>
-        <Filters handleOnClick={filterHandler}/>
+        <div className='mb-2'><Button onClick={handleReset}>Reset</Button></div>
+        {categories.map((category) => (
+          <div onClick={() => {
+            if(selectedCategories.includes(category)){
+                removeCategory(category);
+            } else{
+                addCategory(category);
+            }
+            }}  key={category}> 
+
+              <div className="form-check">
+                <input 
+                  className="form-check-input" 
+                  type="checkbox" 
+                  value={category} 
+                  id={category}
+                  checked={selectedCategories.includes(category)}
+                  onChange={event => { 
+                    event.target.checked ? addCategory(event.target.value) : removeCategory(event.target.value);
+                  }}
+                />
+                <label className="form-check-label pl-2" htmlFor={category}>
+                {category}     
+                </label>
+              </div> 
+          </div>
+
+      ))}
       </div>
       <div className='lg:col-span-4'>
         <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-10'>
-  {
-      (filteredProducts.length > 0 ? filteredProducts
-          .slice(page * limit - limit, page * limit)
-        : products
+  {filteredProducts.length && (
+      (selectedCategories.length === 0 
+        ? filteredProducts.slice(page * limit - limit, page * limit) 
+        : filteredProducts
+        .filter((item) => selectedCategories.includes(item.category))
           .slice(page * limit - limit, page * limit))
           .map(product => (
         <div key={product.id} className='bg-white shadow-md rounded-lg px-5 py-5 flex flex-col justify-between'>
@@ -150,10 +196,10 @@ export function ProductsPage() {
         </div>
         </div>
       ))
-    }
+    )}
         </div>
 
-      {products.length > 8 && (
+      {products.length > limit && (
         <section className="pagination">
           <Button
             onClick={() => handlePageChange(page - 1)}
@@ -188,9 +234,8 @@ export function ProductsPage() {
 
       </div>
     </div>
-</div>
-  </>
-      
+  </div>
+  </>    
 }
 
 export default function WrappedProductsPage() {
