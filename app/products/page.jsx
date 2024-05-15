@@ -21,8 +21,11 @@ export function ProductsPage() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext)
   const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
-  const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(8)
+  const [page, setPage] = useState(1) // Current Active Page
+  const [limit, setLimit] = useState(8) // Items per page
+
+  // const pageStartIndex = (page - 1) * limit;
+  // const pageEndIndex = startIndex + limit;
 
 
   const addCategory = (category) => {
@@ -107,8 +110,8 @@ export function ProductsPage() {
     <h1 className='text-2xl uppercase font-bold mt-10 text-center mb-10'>Shop</h1>
     </div>
 
-    <div className='grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5 px-20'>
-      <div>
+    <div className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-x-8 gap-y-10 lg:grid-cols-5 px-5 md:px-10 lg:px-20'>
+      <div className=''>
         <div className='mb-2'><Button onClick={handleReset}>Reset</Button></div>
         {categories.map((category) => (
           <div onClick={() => {
@@ -138,8 +141,8 @@ export function ProductsPage() {
 
       ))}
       </div>
-      <div className='lg:col-span-4'>
-        <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-10'>
+      <div className='col-span-2 md:col-span-2 lg:col-span-4'>
+        <div className='grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-4 px-5 lg:px-10'>
   {filteredProducts.length && (
       (selectedCategories.length === 0 
         ? filteredProducts.slice(page * limit - limit, page * limit) 
@@ -156,7 +159,7 @@ export function ProductsPage() {
             <p className='mt-2 text-gray-600 text-sm'>{product.description.slice(0, 40)}...</p>
             <p className='mt-2 text-gray-600'>${product.price}</p>
           </div>
-          <div className='mt-6 flex justify-between items-center'>
+          <div className='mt-6 flex flex-col lg:flex-row justify-between items-center'>
             {
               !cartItems.find(item => item.id === product.id) ? (
                 <Button onClick={() => {
@@ -200,7 +203,7 @@ export function ProductsPage() {
         </div>
 
       {products.length > limit && (
-        <section className="pagination">
+        <section className="pagination mt-4">
           <Button
             onClick={() => handlePageChange(page - 1)}
             className={`arrow ${page === 1 ? "pagination__disabled" : ""}`}
