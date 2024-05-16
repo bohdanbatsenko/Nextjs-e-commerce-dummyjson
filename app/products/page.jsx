@@ -2,16 +2,17 @@
 
 import Image from 'next/image';
 import './page.module.css'
-//import Filters from '@/components/Filters';
 import Link from 'next/link';
-
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import { CartProvider } from '@/context/cart';
 import { CartContext } from '@/context/cart';
+import Pagination from '@/components/Pagination';
 import { ToastContainer } from 'react-toastify';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
 import Button from '@/components/Button';
+
+let PageSize = 8;
 
 export function ProductsPage() {
   const router = useRouter()
@@ -21,12 +22,7 @@ export function ProductsPage() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext)
   const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
-  const [page, setPage] = useState(1) // Current Active Page
-  const [limit, setLimit] = useState(8) // Items per page
-
-  // const pageStartIndex = (page - 1) * limit;
-  // const pageEndIndex = startIndex + limit;
-
+  const [currentPage, setCurrentPage] = useState(1);
 
   const addCategory = (category) => {
     if(!selectedCategories.includes(category)){
@@ -60,47 +56,41 @@ export function ProductsPage() {
     getCategories() 
     }, [])
 
-  const getProducts = () => {
-    fetch('https://dummyjson.com/products?limit=100')
-    .then(res => res.json()) 
-    .then((data) => {
-      if (data.products && data.products.length) {
-        setProducts(data.products);
-        setFilteredProducts(data.products);
-      };
-    })  
-
-    .catch((err) => console.log(err));
-  }
-
-  useEffect(() => {
-    getProducts()
-  }, [])
-
-  useEffect(() => {
-    if(selectedCategories.length === 0){
-      setFilteredProducts(products);
-    } else{
-      setFilteredProducts(
-        products.filter(
-        (item) => selectedCategories.includes(item.category)
-        )
-      );
+    const getProducts = () => {
+      fetch('https://dummyjson.com/products?limit=100')
+      .then(res => res.json()) 
+      .then((data) => {
+        if (data.products && data.products.length) {
+          setProducts(data.products);
+          setFilteredProducts(data.products);
+        };
+      })  
+  
+      .catch((err) => console.log(err));
     }
-  }, [selectedCategories, products])
+  
+    useEffect(() => {
+      getProducts()
+    }, [])
+  
+    useEffect(() => {
+      if(selectedCategories.length === 0){
+        setFilteredProducts(products);
+      } else{
+        setFilteredProducts(
+          products.filter(
+          (item) => selectedCategories.includes(item.category)
+          )
+        );
+      }
+    }, [selectedCategories, products])
+
+  const firstPageIndex = (currentPage - 1) * PageSize;
+  const lastPageIndex = firstPageIndex + PageSize;
 
   const handleRemoveFromCart = (product) => {
     removeFromCart(product);
     notifyRemovedFromCart(product);
-  };
-
-  const handlePageChange = (pageNumber) => {
-    if (
-      pageNumber > 0 &&
-      pageNumber <= products.length &&
-      pageNumber !== page
-    )
-      setPage(pageNumber);    
   };
 
   return <>
@@ -145,10 +135,11 @@ export function ProductsPage() {
         <div className='grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-4 px-5 lg:px-10'>
   {filteredProducts.length && (
       (selectedCategories.length === 0 
-        ? filteredProducts.slice(page * limit - limit, page * limit) 
+        ? filteredProducts.slice(firstPageIndex, lastPageIndex)
         : filteredProducts
         .filter((item) => selectedCategories.includes(item.category))
-          .slice(page * limit - limit, page * limit))
+        .slice(firstPageIndex, lastPageIndex)
+        )
           .map(product => (
         <div key={product.id} className='bg-white shadow-md rounded-lg px-5 py-5 flex flex-col justify-between'>
           <Image src={product.thumbnail} width={300} height={200} alt={product.title} className='rounded-md h-48' />
@@ -200,41 +191,14 @@ export function ProductsPage() {
         </div>
       ))
     )}
-        </div>
-
-      {products.length > limit && (
-        <section className="pagination mt-4">
-          <Button
-            onClick={() => handlePageChange(page - 1)}
-            className={`arrow ${page === 1 ? "pagination__disabled" : ""}`}
-          >
-            {"<"}
-          </Button>
-          {[...Array(Math.floor(products.length / limit))].map((_, i) => (
-            <span
-              className={`page__number cursor-pointer relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
-                page === i + 1 ? "selected__page__number" : ""
-              }`}
-              style={page === i + 1 ? { backgroundColor: 'black', color: 'white' } : {}}
-              key={i + 1}
-              onClick={() => handlePageChange(i + 1)}
-            >
-              {i + 1}
-            </span>
-          ))}
-          <Button
-            onClick={() => handlePageChange(page + 1)}
-            className={`arrow ${
-              page === Math.floor(products.length / limit)
-                ? "pagination__disabled"
-                : ""
-            }`}
-          >
-            {">"}
-          </Button>
-        </section>
-      )}
-
+   </div>
+   <Pagination
+        className="pagination-bar"
+        currentPage={currentPage}
+        totalCount={filteredProducts.length === 0 ? products.length : filteredProducts.length}
+        pageSize={PageSize}
+        onPageChange={page => setCurrentPage(page)}
+      />
       </div>
     </div>
   </div>

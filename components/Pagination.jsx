@@ -1,43 +1,60 @@
-//import { useEffect } from 'react';
-// import usePagination from '../hooks/usePagination';
-// import Button from './Button';
+import { usePagination, DOTS } from '@/hooks/usePagination';
+import Button from './Button';
 
-// const Pagination = ({ pageCount, pageNumber, changePage, nextPage, previousPage }) => {
-//   const pageNumbers = [...Array(pageCount).keys()].map(num => num + 1);
-//   return (
-//     <nav>
-//       <Button onClick={previousPage} disabled={pageNumber === 1}>Previous</Button>
-//       {pageNumbers.map(number => (
-//         <Button key={number} onClick={() => changePage(number)}>{number}</Button>
-//       ))}
-//       <Button onClick={nextPage} disabled={pageNumber === pageCount}>Next</Button>
-//     </nav>
-//   );
-// };
+const Pagination = props => {
+  const {
+    onPageChange,
+    totalCount,
+    siblingCount = 1,
+    currentPage,
+    pageSize
+  } = props;
 
-// const Pagination = (props) => {
-//   const { pageNumber, changePage, pageData, nextPage, previousPage} = usePagination(props.items, props.pageLimit)
-//   useEffect(() => {
-//     props.setPageItems(pageData);
-//   }, [pageNumber]);
+  const paginationRange = usePagination({
+    currentPage,
+    totalCount,
+    siblingCount,
+    pageSize
+  });
 
-//   return (
-//     <nav>
-//        <Button onClick={previousPage}>Prev</Button>
-//       <ul className='pagination'>
-//         <li>
-//         <input
-//         value={pageNumber}
-//         onChange={(e) => {
-//           changePage(e.target.valueAsNumber);
-//         }}
-//         type="number"
-//       />
-//         </li>
-//       </ul>
-//       <Button onClick={nextPage}>Next</Button>
-//     </nav>
-//   );
-// };
+  if (currentPage === 0 || paginationRange.length < 2) {
+    return null;
+  }
 
-//export default Pagination;
+  const onNext = () => {
+    onPageChange(currentPage + 1);
+  };
+
+  const onPrevious = () => {
+    onPageChange(currentPage - 1);
+  };
+
+  let lastPage = paginationRange[paginationRange.length - 1];
+
+  return (
+    <ul
+      className="mt-6 flex gap-x-2"
+    >
+      <Button disabled={currentPage === 1} onClick={onPrevious}>{"<"}</Button>
+      {paginationRange.map(pageNumber => {
+        if (pageNumber === DOTS) {
+          return <li key={Math.random()} className="pagination-item dots">&#8230;</li>;
+        }
+
+        return (
+          <li
+            key={Math.random()}
+            className='pagination-item cursor-pointer relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
+            style={pageNumber === currentPage ? { backgroundColor: 'black', color: 'white' } : {}}
+            onClick={() => onPageChange(pageNumber)}
+          >
+            {pageNumber}
+          </li>
+        );
+      })}
+      <Button disabled={currentPage === lastPage} onClick={onNext}>{">"}</Button>
+    </ul>
+  );
+};
+
+export default Pagination;
