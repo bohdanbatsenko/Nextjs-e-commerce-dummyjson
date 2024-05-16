@@ -10,7 +10,7 @@ import { CartContext } from '@/context/cart';
 import Pagination from '@/components/Pagination';
 import { ToastContainer } from 'react-toastify';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
-import Button from '@/components/Button';
+import Button from '@/components/Button'; 
 
 let PageSize = 8;
 
@@ -132,7 +132,7 @@ export function ProductsPage() {
       ))}
       </div>
       <div className='col-span-2 md:col-span-2 lg:col-span-4'>
-        <div className='grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-4 px-5 lg:px-10'>
+        <div className='grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-4 px-5 lg:px-0 lg:pr-10'>
   {filteredProducts.length && (
       (selectedCategories.length === 0 
         ? filteredProducts.slice(firstPageIndex, lastPageIndex)
