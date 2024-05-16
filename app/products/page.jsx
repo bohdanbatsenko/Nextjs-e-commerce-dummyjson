@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import './page.module.css'
-//import Filters from '@/components/Filters';
 import Link from 'next/link';
 
 import { useRouter } from 'next/navigation'
@@ -234,7 +233,6 @@ export function ProductsPage() {
           </Button>
         </section>
       )}
-
       </div>
     </div>
   </div>
