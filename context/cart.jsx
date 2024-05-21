@@ -4,13 +4,14 @@ import { createContext, useState, useEffect } from 'react'
 export const CartContext = createContext() 
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([])
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
     const localStorageCarts = localStorage.getItem('cartItems')
+
       if(localStorageCarts) {
-        setCartItems(JSON.parse(localStorageCarts))
+        setCartItems(JSON.parse(localStorageCarts));
       }
   }
   }, [])
@@ -56,8 +57,14 @@ export const CartProvider = ({ children }) => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0); // calculate the total price of the items in the cart
   };
 
+  const getCartItemCount = () => {
+    return cartItems.reduce((count, item) => count + item.quantity, 0);
+  };
+
   useEffect(() => {
-    if (cartItems.length > 0 && typeof window !== "undefined") localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    if (cartItems.length > 0 && typeof window !== "undefined") {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    }
   }, [cartItems]);
 
   return (
@@ -67,7 +74,8 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         clearCart,
-        getCartTotal
+        getCartTotal,
+        getCartItemCount
       }}
     >
       {children}

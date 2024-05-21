@@ -1,12 +1,12 @@
 'use client';
 import { useContext } from 'react'
-import { CartContext } from '../../../context/cart'
-import { CartProvider } from '../../../context/cart';
+import { CartContext } from '@/context/cart'
+import { CartProvider } from '@/context/cart';
 import { ToastContainer } from 'react-toastify'
 import { toasterNotifier } from '@/hooks/useToasterNotify';
 import 'react-toastify/dist/ReactToastify.css'
 
-export function Cart() {
+export const Cart = () => {
   const { cartItems, addToCart, removeFromCart, clearCart, getCartTotal } = useContext(CartContext)
   const { notifyRemovedFromCart, notifyCartCleared } = toasterNotifier()
 
