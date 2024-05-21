@@ -4,7 +4,7 @@ import Image from 'next/image';
 import './page.module.css'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, useContext, useMemo } from "react";
+import { useEffect, useState, useContext } from "react";
 import { CartProvider } from '@/context/cart';
 import { CartContext } from '@/context/cart';
 import Pagination from '@/components/Pagination';

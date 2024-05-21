@@ -1,6 +1,6 @@
 'use client';
 import './header.css'
-import MiniCart from './miniCart'
+import MiniCart from './MiniCart'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
 import { useState, useContext } from 'react';
@@ -27,17 +27,6 @@ const pathname = usePathname()
   const handleNav = () => {
     setNav(!nav);
   };
-
-  const toggleMiniCart = () => {
-    console.log('toggle');
-  }
-
-  // Array containing navigation items
-  const navItems = [
-    { id: 1, text: 'Home', href: '/' },
-    { id: 2, text: 'Products', href: '/products' },
-    { id: 3, text: 'Cart', href: '/products/cart' },
-  ];
 
   return (
     <div className='bg-black flex justify-between items-center h-24 mx-auto px-4 text-white'>
@@ -67,42 +56,54 @@ const pathname = usePathname()
       </div>
 
       {/* Mobile Navigation Menu */}
-      <ul
+      <div
         className={
           nav
-            ? 'fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] ease-in-out duration-500'
-            : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'
-        }
-      >
-        {/* Mobile Logo */}
-        <h1 className='w-full text-3xl font-bold text-[#00df9a] m-4'>REACT.</h1>
+            ? 'fixed md:hidden left-0 top-0 overflow-hidden z-10 bg-gray-900 bg-opacity-25 inset-0 h-full bg-[#000300] ease-in-out duration-500'
+            : 'fixed top-0 bottom-0 left-[-100%]'
+        }>
+        <ul
+          className={
+            nav
+              ? 'fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] ease-in-out duration-500'
+              : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'
+          }
+        >
+          {/* Mobile Logo */}
+          <h2 className='w-full text-3xl font-bold text-[#00df9a] m-4'>Next shop</h2>
 
-        {/* Mobile Navigation Items */}
-          <li
-            className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
-          >
-            <Link href="/" onClick={() => setNav(false)}>Home</Link>
-          </li>
-          <li
-            className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
-          >
-            <Link href="/products" onClick={() => setNav(false)}>Products</Link>
-          </li>
-          <li
-            className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
-          >
-            <Link href="/products/cart" onClick={() => setNav(false)}>Cart</Link>
-          </li>
-      
-      </ul>
+          {/* Mobile Navigation Items */}
+            <li
+              className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
+            >
+              <Link href="/" onClick={() => setNav(false)}>Home</Link>
+            </li>
+            <li
+              className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
+            >
+              <Link href="/products" onClick={() => setNav(false)}>Products</Link>
+            </li>
+            <li
+              className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
+            >
+              <Link href="/products/cart" onClick={() => setNav(false)}>Cart</Link>
+            </li>
+        </ul>
+        <section
+          className="w-screen h-full cursor-pointer"
+          onClick={() => {
+            setNav(false);
+          }}
+        ></section>
+      </div>
       <Link className='md:hidden nav-link shop-cart relative' href="#" onClick={() => setIsOpen(true)}>
-            <FaShoppingCart/>
-            <span className="absolute inset-0 object-right-top ml-2 -mt-4">
-              <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
-                {cartItems.length}
-              </div>
-            </span>
-          </Link>
+        <FaShoppingCart/>
+        <span className="absolute inset-0 object-right-top ml-2 -mt-4">
+          <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
+            {cartItems.length}
+          </div>
+        </span>
+      </Link>
       <MiniCart isOpen={isOpen} setIsOpen={setIsOpen}></MiniCart>
     </div>
   );
