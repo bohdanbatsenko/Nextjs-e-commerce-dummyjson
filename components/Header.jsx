@@ -1,6 +1,6 @@
 'use client';
 import './header.css'
-import MiniCart from './MiniCart'
+import MiniCart from './miniCart'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
 import { useState, useContext } from 'react';
