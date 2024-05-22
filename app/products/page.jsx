@@ -5,8 +5,7 @@ import './page.module.css'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useContext } from "react";
-import { CartProvider } from '@/context/cart';
-import { CartContext } from '@/context/cart';
+import CartContext from '@/context/CartContext';
 import Pagination from '@/components/Pagination';
 import { ToastContainer } from 'react-toastify';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
@@ -14,13 +13,13 @@ import Button from '@/components/Button';
 
 let PageSize = 8;
 
-export function ProductsPage() {
+const ProductsPage = () => {
   const router = useRouter()
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const { cartItems, addToCart, removeFromCart } = useContext(CartContext)
+  const cartCtx = useContext(CartContext)
   const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -88,9 +87,13 @@ export function ProductsPage() {
   const firstPageIndex = (currentPage - 1) * PageSize;
   const lastPageIndex = firstPageIndex + PageSize;
 
-  const handleRemoveFromCart = (product) => {
-    removeFromCart(product);
-    notifyRemovedFromCart(product);
+  const handleAddToCart = (product) => {
+    cartCtx.addItem(product)
+  }
+
+  const handleRemoveFromCart = (id) => {
+    cartCtx.removeItem(id);
+    notifyRemovedFromCart(id);
   };
 
   return <>
@@ -152,26 +155,26 @@ export function ProductsPage() {
           </div>
           <div className='mt-6 flex flex-col lg:flex-row justify-between items-center'>
             {
-              !cartItems.find(item => item.id === product.id) ? (
+              !cartCtx.items.find(item => item.id === product.id) ? (
                 <Button onClick={() => {
-                  addToCart(product)
+                  handleAddToCart(product)
                   notifyAddedToCart(product)
                   }
                 }>Add to cart</Button>
               ) : (
                 <div className="flex gap-4">
                   <Button onClick={() => {
-                      addToCart(product)
+                      handleAddToCart(product)
                     }
                 }>+</Button>
-                <p className='text-gray-600'>{cartItems.find(item => item.id === product.id).quantity}</p>
+                <p className='text-gray-600'>{cartCtx.items.find(item => item.id === product.id).quantity}</p>
                 <Button
                   onClick={() => {
-                    const cartItem = cartItems.find((item) => item.id === product.id);
+                    const cartItem = cartCtx.items.find((item) => item.id === product.id);
                     if (cartItem.quantity === 1) {
-                      handleRemoveFromCart(product);
+                      handleRemoveFromCart(product.id);
                     } else {
-                      removeFromCart(product);
+                      cartCtx.removeItem(product.id);
                     }
                   }}>-</Button>
               </div>
@@ -205,10 +208,4 @@ export function ProductsPage() {
   </>    
 }
 
-export default function WrappedProductsPage() {
-  return (
-    <CartProvider>
-      <ProductsPage />
-    </CartProvider>
-  );
-}
+export default ProductsPage;

@@ -1,6 +1,6 @@
 import './index.css';
 import Header from '../components/Header';
-import { CartProvider } from '@/context/cart';
+import { CartContextProvider } from '@/context/CartContext';
 
 export const metadata = {
   title: 'Next.js',
@@ -11,10 +11,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <CartProvider>
+        <CartContextProvider>
           <Header />
           {children}
-        </CartProvider>
+        </CartContextProvider>
       </body>
     </html>
   )

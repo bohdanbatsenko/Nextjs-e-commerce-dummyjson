@@ -1,4 +1,5 @@
 'use client';
+
 import './header.css'
 import MiniCart from './miniCart'
 import { usePathname } from 'next/navigation'
@@ -6,21 +7,17 @@ import Link from 'next/link';
 import { useState, useContext } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { FaShoppingCart } from "react-icons/fa";
-import { CartContext } from '@/context/cart';
+import CartContext from '@/context/CartContext';
 
-export const Header = () => {
-const pathname = usePathname()
-  // State to manage the navbar's visibility
+const Header = () => {
+  const cartCtx = useContext(CartContext)
+  const pathname = usePathname()
   const [nav, setNav] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const {
-    cartItems,
-    addToCart,
-    removeFromCart,
-    clearCart,
-    getCartTotal,
-    getCartItemCount} = useContext(CartContext);
+  const totalCartItems = cartCtx.items.reduce((totalNumberOfItems, item) => {
+    return totalNumberOfItems + item.quantity;
+  }, 0)
 
   const handleNav = () => {
     setNav(!nav);
@@ -41,7 +38,7 @@ const pathname = usePathname()
             <FaShoppingCart/>
             <span className="absolute inset-0 object-right-top ml-8 -mt-3">
               <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
-                {cartItems.length}
+                {totalCartItems}
               </div>
             </span>
           </Link>
@@ -98,7 +95,7 @@ const pathname = usePathname()
         <FaShoppingCart/>
         <span className="absolute inset-0 object-right-top ml-2 -mt-4">
           <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
-            {cartItems.length}
+            {/* {cartItems.length} */}
           </div>
         </span>
       </Link>

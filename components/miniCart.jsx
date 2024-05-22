@@ -1,19 +1,22 @@
+'use client'
+
 import Link from 'next/link';
 import { FaRegTimesCircle } from "react-icons/fa";
 import { useContext } from 'react'
-import { CartContext } from '@/context/cart'
+import CartContext from '@/context/CartContext'
 import { ToastContainer } from 'react-toastify'
 import { toasterNotifier } from '@/hooks/useToasterNotify';
 import 'react-toastify/dist/ReactToastify.css'
 
 const MiniCart = ({isOpen, setIsOpen}) => {
-  const { cartItems, removeFromCart, getCartTotal } = useContext(CartContext)
+  const cartCtx = useContext(CartContext)
   const { notifyRemovedFromCart, notifyCartCleared } = toasterNotifier()
 
   const handleRemoveFromCart = (product) => {
-  removeFromCart(product)
-  notifyRemovedFromCart(product)
-}
+    cartCtx.removeItem(product);
+    notifyRemovedFromCart(product)
+  }
+  const cartTotal = cartCtx.items.reduce((totalPrice, item) => totalPrice + item.quantity * item.price, 0)
 
   return (
     <div className={
@@ -52,7 +55,7 @@ const MiniCart = ({isOpen, setIsOpen}) => {
             <div className="mt-8">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {cartItems.map((product) => (
+                  {cartCtx.items.map((product) => (
                     <li key={product.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
@@ -80,11 +83,11 @@ const MiniCart = ({isOpen, setIsOpen}) => {
                               type="button"
                               className="font-medium text-indigo-600 hover:text-indigo-500"
                               onClick={() => {
-                                const cartItem = cartItems.find((el) => el.id === product.id);
+                                const cartItem = cartCtx.items.find((el) => el.id === product.id);
                                 if (cartItem.quantity === 1) {
-                                  handleRemoveFromCart(product);
+                                  handleRemoveFromCart(product.id);
                                 } else {
-                                  removeFromCart(product);
+                                  cartCtx.removeItem(product.id);
                                 }
                               }}
                             >
@@ -103,7 +106,7 @@ const MiniCart = ({isOpen, setIsOpen}) => {
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between text-base font-medium text-gray-900">
               <p>Subtotal</p>
-              <p>${getCartTotal()}</p>
+              <p>${cartTotal}</p>
             </div>
             <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
             <div className="mt-6">
@@ -114,12 +117,6 @@ const MiniCart = ({isOpen, setIsOpen}) => {
             >
               Checkout
             </Link>
-              {/* <a
-                href="#"
-                className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-              >
-                Checkout
-              </a> */}
             </div>
             <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
               <p>
