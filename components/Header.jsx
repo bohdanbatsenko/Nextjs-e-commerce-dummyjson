@@ -22,8 +22,6 @@ const pathname = usePathname()
     getCartTotal,
     getCartItemCount} = useContext(CartContext);
 
-
-  // Toggle function to handle the navbar's display
   const handleNav = () => {
     setNav(!nav);
   };
@@ -31,7 +29,7 @@ const pathname = usePathname()
   return (
     <div className='bg-black flex justify-between items-center h-24 mx-auto px-4 text-white'>
       {/* Logo */}
-      <h1 className='w-full text-3xl font-bold text-[#00df9a]'>NEXT SHOP</h1>
+      <h2 className='w-full text-3xl font-bold text-[#00df9a]'>NEXT SHOP</h2>
 
       {/* Desktop Navigation */}
       <nav className='nav'>
