@@ -4,9 +4,7 @@ import Link from 'next/link';
 import { FaRegTimesCircle } from "react-icons/fa";
 import { useContext } from 'react'
 import CartContext from '@/context/CartContext'
-import { ToastContainer } from 'react-toastify'
 import { toasterNotifier } from '@/hooks/useToasterNotify';
-import 'react-toastify/dist/ReactToastify.css'
 
 const MiniCart = ({isOpen, setIsOpen}) => {
   const cartCtx = useContext(CartContext)
@@ -26,7 +24,7 @@ const MiniCart = ({isOpen, setIsOpen}) => {
           : " transition-all delay-500 opacity-0 translate-x-full  ")
       }    
     >
-      <ToastContainer />
+      {/* <ToastContainer limit={1}/> */}
       <section
         className={
           "md:w-screen md:max-w-lg right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  " +

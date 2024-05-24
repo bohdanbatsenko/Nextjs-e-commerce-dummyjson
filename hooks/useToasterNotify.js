@@ -1,5 +1,4 @@
 import {  toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export const toasterNotifier = () => {
   const notifyAddedToCart = (item) => toast.success(`${item.title} added to cart!`, {
@@ -16,7 +15,7 @@ export const toasterNotifier = () => {
     }
     });
 
-  const notifyRemovedFromCart = (item) => toast.error(`${item.title} removed from cart!`, {
+  const notifyRemovedFromCart = (item) => toast.success(`${item.title} removed from cart!`, {
     position: "top-center",
     autoClose: 2000,
     hideProgressBar: true,
@@ -30,7 +29,7 @@ export const toasterNotifier = () => {
     }
   });
 
-  const notifyCartCleared = () => toast.error(`Cart cleared!`, {
+  const notifyCartCleared = () => toast.success(`Cart cleared!`, {
     position: 'top-center',
     autoClose: 2000,
     hideProgressBar: true,

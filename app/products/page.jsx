@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, useContext } from "react";
 import CartContext from '@/context/CartContext';
 import Pagination from '@/components/Pagination';
-import { ToastContainer } from 'react-toastify';
+//import { ToastContainer, toast } from 'react-toastify';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
 import Button from '@/components/Button'; 
 
@@ -53,36 +53,36 @@ const ProductsPage = () => {
   
   useEffect(() => {
     getCategories() 
-    }, [])
+  }, [])
 
-    const getProducts = () => {
-      fetch('https://dummyjson.com/products?limit=100')
-      .then(res => res.json()) 
-      .then((data) => {
-        if (data.products && data.products.length) {
-          setProducts(data.products);
-          setFilteredProducts(data.products);
-        };
-      })  
-  
-      .catch((err) => console.log(err));
+  const getProducts = () => {
+    fetch('https://dummyjson.com/products?limit=100')
+    .then(res => res.json()) 
+    .then((data) => {
+      if (data.products && data.products.length) {
+        setProducts(data.products);
+        setFilteredProducts(data.products);
+      };
+    })  
+
+    .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    getProducts()
+  }, [])
+
+  useEffect(() => {
+    if(selectedCategories.length === 0){
+      setFilteredProducts(products);
+    } else{
+      setFilteredProducts(
+        products.filter(
+        (item) => selectedCategories.includes(item.category)
+        )
+      );
     }
-  
-    useEffect(() => {
-      getProducts()
-    }, [])
-  
-    useEffect(() => {
-      if(selectedCategories.length === 0){
-        setFilteredProducts(products);
-      } else{
-        setFilteredProducts(
-          products.filter(
-          (item) => selectedCategories.includes(item.category)
-          )
-        );
-      }
-    }, [selectedCategories, products])
+  }, [selectedCategories, products])
 
   const firstPageIndex = (currentPage - 1) * PageSize;
   const lastPageIndex = firstPageIndex + PageSize;
@@ -98,7 +98,7 @@ const ProductsPage = () => {
 
   return <>
     <div className='flex flex-col justify-center bg-gray-100'>
-    <ToastContainer />
+    {/* <ToastContainer limit={1} /> */}
       <div className='flex justify-between items-center px-20 py-5'>
     <h1 className='text-2xl uppercase font-bold mt-10 text-center mb-10'>Shop</h1>
     </div>
@@ -106,6 +106,7 @@ const ProductsPage = () => {
     <div className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-x-8 gap-y-10 lg:grid-cols-5 px-5 md:px-10 lg:px-20'>
       <div className=''>
         <div className='mb-2'><Button onClick={handleReset}>Reset</Button></div>
+
         {categories.map((category) => (
           <div onClick={() => {
             if(selectedCategories.includes(category)){
@@ -113,26 +114,26 @@ const ProductsPage = () => {
             } else{
                 addCategory(category);
             }
-            }}  key={category}> 
+            }}  key={category.slug}> 
 
               <div className="form-check">
                 <input 
                   className="form-check-input" 
                   type="checkbox" 
-                  value={category} 
-                  id={category}
-                  checked={selectedCategories.includes(category)}
+                  value={category.slug} 
+                  id={category.slug}
+                  checked={selectedCategories.includes(category.slug)}
                   onChange={event => { 
                     event.target.checked ? addCategory(event.target.value) : removeCategory(event.target.value);
                   }}
                 />
-                <label className="form-check-label pl-2" htmlFor={category}>
-                {category}     
+                <label className="form-check-label pl-2" htmlFor={category.slug}>
+                {category.name}     
                 </label>
               </div> 
           </div>
-
       ))}
+
       </div>
       <div className='col-span-2 md:col-span-2 lg:col-span-4'>
         <div className='grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-4 px-5 lg:px-0 lg:pr-10'>

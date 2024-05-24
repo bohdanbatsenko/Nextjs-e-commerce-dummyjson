@@ -1,12 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import Button from '../../../components/Button';
+import Button from '@/components/Button';
 import { useEffect, useState, useContext } from 'react';
 import { useSearchParams } from "next/navigation";
 import CartContext from '@/context/CartContext';
-import { ToastContainer } from 'react-toastify';
-import { toasterNotifier } from '../../../hooks/useToasterNotify';
+import { toasterNotifier } from '@/hooks/useToasterNotify';
 
 const Product = () => {
   const searchParams = useSearchParams()
@@ -33,15 +32,15 @@ const Product = () => {
     return <div>Loading...</div>;
   }
 
-    const handleRemoveFromCart = (product) => {
-    removeFromCart(product);
-    notifyRemovedFromCart(product);
+    const handleRemoveFromCart = (id) => {
+    cartCtx.removeItem(id);
+    notifyRemovedFromCart(id);
   };
 
 
   return <>
   <div className="font-[sans-serif]">
-    <ToastContainer />
+    {/* <ToastContainer limit={1}/> */}
         <div className="p-6 lg:max-w-7xl max-w-2xl max-lg:mx-auto">
           <div className="grid items-start grid-cols-1 lg:grid-cols-5 gap-12">
             <div className="lg:col-span-3 bg-gray-100 w-full lg:sticky top-0 text-center p-8">
@@ -108,7 +107,7 @@ const Product = () => {
                       if (cartItem.quantity === 1) {
                         handleRemoveFromCart(product.id);
                       } else {
-                        removeFromCart(product.id);
+                        cartCtx.removeItem(product.id);
                       }
                     }}>-</Button>
                 </div>

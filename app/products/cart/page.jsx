@@ -1,17 +1,15 @@
 'use client';
 import { useContext } from 'react';
 import CartContext from '@/context/CartContext';
-import { ToastContainer } from 'react-toastify';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const Cart = () => {
   const cartCtx = useContext(CartContext)
   const { notifyRemovedFromCart, notifyCartCleared } = toasterNotifier()
 
-  const handleRemoveFromCart = (product) => {
-    cartCtx.removeItem(product)
-    notifyRemovedFromCart(product)
+  const handleRemoveFromCart = (id) => {
+    cartCtx.removeItem(id)
+    notifyRemovedFromCart(id)
   }
 
   const cartTotal = cartCtx.items.reduce((totalPrice, item) => totalPrice + item.quantity * item.price, 0)
@@ -19,7 +17,7 @@ const Cart = () => {
   return (
     <>
       <div className="flex-col flex items-center bg-white gap-8 p-10 text-black text-sm">
-      <ToastContainer />
+      {/* <ToastContainer limit={1}/> */}
       <h1 className="text-2xl font-bold">Cart</h1>
       <div className="flex flex-col gap-4">
         {cartCtx.items && cartCtx.items.map((item) => (

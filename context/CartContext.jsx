@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useEffect } from "react";
 
 const CartContext = createContext({
   items: [],
@@ -10,6 +10,11 @@ const CartContext = createContext({
 });
 
 const cartReducer = (state, action) => {
+
+  if (action.type === 'LOAD_CART') {
+    return { ...state, items: action.items };
+  }
+
   if (action.type === 'ADD_ITEM') {
     const existingCartItemIndex = state.items.findIndex(
       (item) => item.id === action.item.id
@@ -64,7 +69,22 @@ const cartReducer = (state, action) => {
 }
 
 export const CartContextProvider = ({children}) => {
-  const [ cart, dispatchCartAction ] = useReducer(cartReducer, { items: [] });
+  const [ cart, dispatchCartAction ] = useReducer(cartReducer, {items: []});
+
+  useEffect(() => {
+    const localStorageCart = typeof window !== 'undefined' 
+      ? JSON.parse(localStorage.getItem('cart')) || [] 
+      : [];
+
+    dispatchCartAction({ type: 'LOAD_CART', items: localStorageCart });
+  }, []);
+  
+  useEffect(()=> {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('cart', JSON.stringify(cart.items))
+    }
+  },[cart.items]);
+
   const addItem = (item) => {
     dispatchCartAction({ type: 'ADD_ITEM', item })
   }

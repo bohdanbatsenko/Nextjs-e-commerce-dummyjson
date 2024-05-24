@@ -1,6 +1,8 @@
 import './index.css';
 import Header from '../components/Header';
 import { CartContextProvider } from '@/context/CartContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata = {
   title: 'Next.js',
@@ -12,6 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <CartContextProvider>
+         <ToastContainer />
           <Header />
           {children}
         </CartContextProvider>
