@@ -7,9 +7,9 @@ const Cart = () => {
   const cartCtx = useContext(CartContext)
   const { notifyRemovedFromCart, notifyCartCleared } = toasterNotifier()
 
-  const handleRemoveFromCart = (id) => {
+  const handleRemoveFromCart = ({id, title}) => {
     cartCtx.removeItem(id)
-    notifyRemovedFromCart(id)
+    notifyRemovedFromCart(title)
   }
 
   const cartTotal = cartCtx.items.reduce((totalPrice, item) => totalPrice + item.quantity * item.price, 0)
@@ -44,7 +44,7 @@ const Cart = () => {
                 onClick={() => {
                   const cartItem = cartCtx.items.find((product) => product.id === item.id);
                   if (cartItem.quantity === 1) {
-                    handleRemoveFromCart(item.id);
+                    handleRemoveFromCart(item);
                   } else {
                     cartCtx.removeItem(item.id);
                   }

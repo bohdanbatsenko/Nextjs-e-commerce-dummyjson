@@ -10,9 +10,9 @@ const MiniCart = ({isOpen, setIsOpen}) => {
   const cartCtx = useContext(CartContext)
   const { notifyRemovedFromCart, notifyCartCleared } = toasterNotifier()
 
-  const handleRemoveFromCart = (product) => {
-    cartCtx.removeItem(product);
-    notifyRemovedFromCart(product)
+  const handleRemoveFromCart = ({id, title}) => {
+    cartCtx.removeItem(id);
+    notifyRemovedFromCart(title)
   }
   const cartTotal = cartCtx.items.reduce((totalPrice, item) => totalPrice + item.quantity * item.price, 0)
 
@@ -53,7 +53,7 @@ const MiniCart = ({isOpen, setIsOpen}) => {
             <div className="mt-8">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {cartCtx.items.map((product) => (
+                  {cartCtx.items.length ? (cartCtx.items.map((product) => (
                     <li key={product.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
@@ -83,7 +83,7 @@ const MiniCart = ({isOpen, setIsOpen}) => {
                               onClick={() => {
                                 const cartItem = cartCtx.items.find((el) => el.id === product.id);
                                 if (cartItem.quantity === 1) {
-                                  handleRemoveFromCart(product.id);
+                                  handleRemoveFromCart(product);
                                 } else {
                                   cartCtx.removeItem(product.id);
                                 }
@@ -95,7 +95,8 @@ const MiniCart = ({isOpen, setIsOpen}) => {
                         </div>
                       </div>
                     </li>
-                  ))}
+                  )))
+                  : <div className="mt-4 lg:mt-6">No items in cart. Buy something!</div>}
                 </ul>
               </div>
             </div>
@@ -109,24 +110,24 @@ const MiniCart = ({isOpen, setIsOpen}) => {
             <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
             <div className="mt-6">
             <Link 
-              className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700" 
+              className="flex items-center justify-center rounded-md border border-transparent bg-gray-800 px-6 py-3 text-base font-medium text-white hover:bg-gray-500" 
               href="/products/cart"
               onClick={() => setIsOpen(false)}
             >
-              Checkout
+              Go to cart
             </Link>
             </div>
             <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
               <p>
                 or{' '}
-                <button
-                  type="button"
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                <Link
+                  href="/products"
+                  className="font-medium text-gray-600 hover:text-gray-500"
                   onClick={() => setIsOpen(false)}
                 >
                   Continue Shopping
                   <span aria-hidden="true"> &rarr;</span>
-                </button>
+                </Link>
               </p>
             </div>
           </div>

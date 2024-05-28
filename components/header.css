@@ -17,22 +17,14 @@
     border-radius: 0.5rem;
   }
   
-  .nav .nav-link:hover,
-  .nav .nav-link:focus,
-  .nav .nav-link:active {
-    background: linear-gradient(90deg, #ff8a05, #f9b331);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 18px rgba(248, 190, 42, 0.8);
+  .nav .nav-link:hover:not(.shop-cart),
+  .nav .nav-link:focus:not(.shop-cart),
+  .nav .nav-link:active:not(.shop-cart) {
+    @apply text-amber-500;
   }
   
   .nav .nav-link.active {
-    background: linear-gradient(90deg, #ff8a05, #f9b331);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 18px rgba(248, 190, 42, 0.8);
+    @apply text-amber-500;
   }
   
   .logo {

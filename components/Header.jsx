@@ -26,7 +26,7 @@ const Header = () => {
   return (
     <div className='bg-black flex justify-between items-center h-24 mx-auto px-4 text-white'>
       {/* Logo */}
-      <h2 className='w-full text-3xl font-bold text-[#00df9a]'>NEXT SHOP</h2>
+      <h2 className='w-full text-3xl font-bold text-amber-500'>NEXT SHOP</h2>
 
       {/* Desktop Navigation */}
       <nav className='nav'>
@@ -36,11 +36,13 @@ const Header = () => {
           <Link className={`nav-link ${pathname === '/products/cart' ? 'active' : ''}`} href="/products/cart">Cart</Link>
           <Link className='nav-link shop-cart relative' href="#" onClick={() => setIsOpen(true)}>
             <FaShoppingCart/>
-            <span className="absolute inset-0 object-right-top ml-8 -mt-3">
-              <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
+            {totalCartItems > 0 
+              ? <span className="absolute inset-0 object-right-top ml-8 -mt-3">
+              <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-semibold leading-4 bg-amber-500 text-black">
                 {totalCartItems}
               </div>
             </span>
+            : ''}
           </Link>
         </ul>
       </nav>
@@ -93,25 +95,17 @@ const Header = () => {
       </div>
       <Link className='md:hidden nav-link shop-cart relative' href="#" onClick={() => setIsOpen(true)}>
         <FaShoppingCart/>
-        <span className="absolute inset-0 object-right-top ml-2 -mt-4">
-          <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
+        {totalCartItems > 0 
+         ? <span className="absolute inset-0 object-right-top ml-2 -mt-4">
+          <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-amber-500 text-black">
             {totalCartItems}
           </div>
         </span>
+        : '' }
       </Link>
       <MiniCart isOpen={isOpen} setIsOpen={setIsOpen}></MiniCart>
     </div>
   );
-
-
-    {/* <nav className={classes.nav}>
-      <ul>
-        <li><NavLink href="/">Home</NavLink></li>
-        <li><NavLink href="/products">Products</NavLink></li>
-        <li><NavLink href="/products/cart">Cart</NavLink></li>
-      </ul>
-    </nav>   */}
-
 }
 
 

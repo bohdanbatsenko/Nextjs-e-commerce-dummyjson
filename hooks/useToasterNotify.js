@@ -15,7 +15,7 @@ export const toasterNotifier = () => {
     }
     });
 
-  const notifyRemovedFromCart = (item) => toast.success(`${item.title} removed from cart!`, {
+  const notifyRemovedFromCart = (product) => toast.success(`${product} removed from cart!`, {
     position: "top-center",
     autoClose: 2000,
     hideProgressBar: true,
