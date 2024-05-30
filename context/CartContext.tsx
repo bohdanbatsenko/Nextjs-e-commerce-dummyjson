@@ -1,15 +1,27 @@
 'use client';
 
 import { createContext, useReducer, useEffect } from "react";
+import { Product } from '@/types/product';
 
-const CartContext = createContext({
+interface State {
+  cart: Product[]
+ }
+
+ interface CartContextType {
+  items: Product[];
+  addItem: (item: Product) => void;
+  removeItem: (id: number) => void;
+  clearCart: () => void 
+ }
+
+const CartContext = createContext<CartContextType>({
   items: [],
-  addItem: (item: String) => {},
-  removeItem: (id: Number) => {},
+  addItem: () => {},
+  removeItem: () => {},
   clearCart: () => {}
 });
 
-const cartReducer = (state, action) => {
+const cartReducer = (state: {items: Product[]}, action: any) => {
 
   if (action.type === 'LOAD_CART') {
     return { ...state, items: action.items };
@@ -68,7 +80,7 @@ const cartReducer = (state, action) => {
   return state;
 }
 
-export const CartContextProvider = ({children}) => {
+export const CartContextProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [ cart, dispatchCartAction ] = useReducer(cartReducer, {items: []});
 
   useEffect(() => {
@@ -85,10 +97,10 @@ export const CartContextProvider = ({children}) => {
     }
   },[cart.items]);
 
-  const addItem = (item) => {
+  const addItem = (item: Product) => {
     dispatchCartAction({ type: 'ADD_ITEM', item })
   }
-  const removeItem = (id) => {
+  const removeItem = (id: number) => {
     dispatchCartAction({ type: 'REMOVE_ITEM', id })
   }
   const clearCart = () => {

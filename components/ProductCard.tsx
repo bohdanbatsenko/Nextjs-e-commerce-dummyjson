@@ -6,11 +6,12 @@ import { useContext } from "react";
 import CartContext from '@/context/CartContext';
 import Button from '@/components/Button';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
+import { Product } from '@/types/product';
 
-const ProductCart = ({product}) => {
+const ProductCart = ({product}: {product: Product}) => {
   const cartCtx = useContext(CartContext)
   const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product: Product) => {
     cartCtx.addItem(product)
   }
 

@@ -8,7 +8,7 @@ import { toasterNotifier } from '@/hooks/useToasterNotify';
 
 const MiniCart = ({isOpen, setIsOpen}) => {
   const cartCtx = useContext(CartContext)
-  const { notifyRemovedFromCart, notifyCartCleared } = toasterNotifier()
+  const { notifyRemovedFromCart } = toasterNotifier()
 
   const handleRemoveFromCart = ({id, title}) => {
     cartCtx.removeItem(id);
@@ -24,7 +24,6 @@ const MiniCart = ({isOpen, setIsOpen}) => {
           : " transition-all delay-500 opacity-0 translate-x-full  ")
       }    
     >
-      {/* <ToastContainer limit={1}/> */}
       <section
         className={
           "md:w-screen md:max-w-lg right-0 absolute bg-white h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  " +
@@ -53,7 +52,9 @@ const MiniCart = ({isOpen, setIsOpen}) => {
             <div className="mt-8">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {cartCtx.items.length ? (cartCtx.items.map((product) => (
+                  {!cartCtx.items.length || cartCtx.items.length === 0 
+                  ? (<div className="mt-4 lg:mt-6">No items in cart. Buy something!</div>)
+                  : (cartCtx.items.map((product) => (
                     <li key={product.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
@@ -67,7 +68,12 @@ const MiniCart = ({isOpen, setIsOpen}) => {
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                              <a href={product.href}>{product.name}</a>
+                              <Link 
+                                href={{
+                                  pathname: "products/product",
+                                  query: {id: product.id},
+                                }}
+                              >{product.title}</Link>
                             </h3>
                             <p className="ml-4">{product.price}</p>
                           </div>
@@ -95,8 +101,9 @@ const MiniCart = ({isOpen, setIsOpen}) => {
                         </div>
                       </div>
                     </li>
-                  )))
-                  : <div className="mt-4 lg:mt-6">No items in cart. Buy something!</div>}
+                  ))
+
+                  )}
                 </ul>
               </div>
             </div>

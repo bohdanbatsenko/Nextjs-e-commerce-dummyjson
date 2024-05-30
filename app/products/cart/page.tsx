@@ -17,7 +17,6 @@ const Cart = () => {
   return (
     <>
       <div className="flex-col flex items-center bg-white gap-8 p-10 text-black text-sm">
-      {/* <ToastContainer limit={1}/> */}
       <h1 className="text-2xl font-bold">Cart</h1>
       <div className="flex flex-col gap-4">
         {cartCtx.items && cartCtx.items.map((item) => (

@@ -8,18 +8,20 @@ import Pagination from '@/components/Pagination';
 import Button from '@/components/Button';
 import SearchForm from '@/components/SearchForm';
 import ProductCard from '@/components/ProductCard';
+import { Product, Products, FilteredProducts } from '@/types/product';
+import { CategoryType, SelectedCategories } from '@/types/category';
 
 let PageSize = 8;
 
 const ProductsPage = () => {
   const router = useRouter()
-  const [products, setProducts] = useState([])
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [products, setProducts] = useState<Products[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<FilteredProducts[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<SelectedCategories[]>([]);
   const cartCtx = useContext(CartContext)
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const handleSearchProduct = () => {
     setSelectedCategories([])
@@ -36,10 +38,16 @@ const ProductsPage = () => {
     });
   };
 
-  const handleSearchFormSubmit = (e) => {
-    e.preventDefault();
-    handleSearchProduct(); 
+  const handleSearchFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleSearchProduct();
   };
+
+  const filterHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.target.checked 
+      ? addCategory(event.target.value) 
+      : removeCategory(event.target.value);
+  }
 
   const addCategory = (category) => {
     setSearchTerm('')
@@ -121,7 +129,8 @@ const ProductsPage = () => {
 
           {categories.map((category) => (
             <div onClick={() => {
-              if(selectedCategories.includes(category.slug)){
+              //if(selectedCategories.includes(category.slug)){
+              if(selectedCategories.map(category => category.slug).includes(category.slug)) {
                   removeCategory(category.slug);
               } else{
                   addCategory(category.slug);
@@ -135,11 +144,7 @@ const ProductsPage = () => {
                     value={category.slug} 
                     id={category.slug}
                     checked={selectedCategories.includes(category.slug)}
-                    onChange={event => { 
-                      event.target.checked 
-                        ? addCategory(event.target.value) 
-                        : removeCategory(event.target.value);
-                    }}
+                    onChange={filterHandler}
                   />
                   <label className="inline-block ps-[0.15rem] hover:cursor-pointer pl-2" htmlFor={category.slug}>
                   {category.name}     
@@ -160,7 +165,7 @@ const ProductsPage = () => {
                 .slice(firstPageIndex, lastPageIndex)
                 )
                   .map(product => (
-                    <ProductCard product={product}/>
+                    <ProductCard product={product} key={product.id}/>
               ))
             )}
           </div>

@@ -9,11 +9,11 @@ import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { FaShoppingCart } from "react-icons/fa";
 import CartContext from '@/context/CartContext';
 
-const Header = () => {
+const Header = ():JSX.Element => {
   const cartCtx = useContext(CartContext)
   const pathname = usePathname()
-  const [nav, setNav] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [nav, setNav] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const totalCartItems = cartCtx.items.reduce((totalNumberOfItems, item) => {
     return totalNumberOfItems + item.quantity;
@@ -33,7 +33,6 @@ const Header = () => {
         <ul className='hidden md:flex md:items-center'>
           <Link className={`nav-link ${pathname === '/' ? 'active' : ''}`} href="/">Home</Link>
           <Link className={`nav-link ${pathname === '/products' ? 'active' : ''}`} href="/products">Products</Link>
-          <Link className={`nav-link ${pathname === '/products/cart' ? 'active' : ''}`} href="/products/cart">Cart</Link>
           <Link className='nav-link shop-cart relative' href="#" onClick={() => setIsOpen(true)}>
             <FaShoppingCart/>
             {totalCartItems > 0 
@@ -79,11 +78,6 @@ const Header = () => {
               className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
             >
               <Link href="/products" onClick={() => setNav(false)}>Products</Link>
-            </li>
-            <li
-              className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
-            >
-              <Link href="/products/cart" onClick={() => setNav(false)}>Cart</Link>
             </li>
         </ul>
         <section
