@@ -269,7 +269,6 @@ const Product = () => {
               </div>
             </div>
           ))}
-          
           <div className="flex items-start mt-8">
             <img src="https://readymadeui.com/team-2.webp" className="w-12 h-12 rounded-full border-2 border-white" />
             <div className="ml-3">
