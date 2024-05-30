@@ -55,7 +55,10 @@ const Product = () => {
             <h2 className="text-3xl font-extrabold text-gray-800">{product.title}</h2>
             <div className="flex flex-wrap gap-4 mt-4">
               <p className="text-gray-800 text-xl font-bold">${product.price}</p>
-              <p className="text-gray-400 text-xl"><strike>${product.price}</strike> <span className="text-sm ml-1">Tax included</span></p>
+              <p className="text-gray-400 text-xl">
+              <s style={{ textDecoration: 'line-through' }}>${product.price}</s>
+                <span className="text-sm ml-1">Tax included</span>
+              </p>
               <p className="text-black text-xl">{product.discountPercentage}%<span className="text-sm ml-1">Discount</span></p>
             </div>
 
