@@ -8,17 +8,15 @@ import Pagination from '@/components/Pagination';
 import Button from '@/components/Button';
 import SearchForm from '@/components/SearchForm';
 import ProductCard from '@/components/ProductCard';
-import { Product, Products, FilteredProducts } from '@/types/product';
-import { CategoryType, SelectedCategories } from '@/types/category';
 
 let PageSize = 8;
 
 const ProductsPage = () => {
   const router = useRouter()
-  const [products, setProducts] = useState<Products[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<FilteredProducts[]>([]);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<SelectedCategories[]>([]);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const cartCtx = useContext(CartContext)
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -49,6 +47,20 @@ const ProductsPage = () => {
       : removeCategory(event.target.value);
   }
 
+  // const addCategory = (categorySlug: string) => {
+  //   const categoryToAdd = categories.find((category) => category.slug === categorySlug);
+    
+  //   if (categoryToAdd && !selectedCategories.some((category) => category.slug === categorySlug)) {
+  //     setSelectedCategories(prev => ([...prev, categoryToAdd]))
+  //   }
+  // }
+  
+  // const removeCategory = (categorySlug: string) => {
+  //   if(selectedCategories.some((category) => category.slug === categorySlug)){
+  //     const updatedCategories = selectedCategories.filter((category) => category.slug !== categorySlug);
+  //     setSelectedCategories(updatedCategories);
+  //   }
+  // }
   const addCategory = (category) => {
     setSearchTerm('')
     if(!selectedCategories.includes(category)){
@@ -103,6 +115,13 @@ const ProductsPage = () => {
     if(selectedCategories.length === 0){
       setFilteredProducts(products);
     } else{
+      // setFilteredProducts(
+      //   products.filter((productItem: Products) =>
+      //     productItem.products && productItem.products.some((item: Product) =>
+      //       selectedCategories.map((categoryItem: CategoryType) => categoryItem.slug).includes(item.category)
+      //     )
+      //   )
+      // );
       setFilteredProducts(
         products.filter((item) => selectedCategories.includes(item.category))
       );

@@ -25,6 +25,9 @@ export type Product = {
   images?: any[];
 }
 
-export type Products = Product[];
-
-export type FilteredProducts = Product[];
+export type Products = {
+  products: Product[];
+}
+export type FilteredProducts = {
+  products: Product[];
+}
