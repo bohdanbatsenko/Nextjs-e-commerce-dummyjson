@@ -3,7 +3,4 @@ export type CategoryType = {
   name: string;
   id?: number;
 }
-export type SelectedCategories = {
-  slug: string;
-  category: CategoryType;
-}
+export type SelectedCategories = CategoryType[]

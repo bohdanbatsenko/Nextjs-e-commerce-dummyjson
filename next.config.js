@@ -7,6 +7,11 @@ module.exports = {
         hostname: 'cdn.dummyjson.com',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.ctfassets.net',
+        port: '',
+      },
     ],
   },
 }

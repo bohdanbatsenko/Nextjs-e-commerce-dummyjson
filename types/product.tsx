@@ -1,4 +1,4 @@
-export interface Product {
+export type Product = {
   id: number;
   title: string;
   description: string;
@@ -25,9 +25,6 @@ export interface Product {
   images?: any[];
 }
 
-export type Products = {
-  products: Product[];
-}
-export type FilteredProducts = {
-  products: Product[];
-}
+export type Products = Product[];
+
+export type FilteredProducts = Product[];
