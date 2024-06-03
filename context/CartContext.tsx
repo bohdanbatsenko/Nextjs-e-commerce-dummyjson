@@ -21,7 +21,13 @@ const CartContext = createContext<CartContextType>({
   clearCart: () => {}
 });
 
-const cartReducer = (state: {items: Product[]}, action: any) => {
+type CartAction = 
+  | { type: 'LOAD_CART'; items: Product[] }
+  | { type: 'ADD_ITEM'; item: Product }
+  | { type: 'REMOVE_ITEM'; id: number }
+  | { type: 'CLEAR_CART' };
+
+const cartReducer = (state: {items: Product[]}, action: CartAction) => {
 
   if (action.type === 'LOAD_CART') {
     return { ...state, items: action.items };
