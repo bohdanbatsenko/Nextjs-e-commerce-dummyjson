@@ -28,6 +28,8 @@ export type Product = {
 export type Products = {
   products: Product[];
 }
+
 export type FilteredProducts = {
   products: Product[];
+  category: string
 }
