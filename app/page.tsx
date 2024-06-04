@@ -1,9 +1,11 @@
 import { getAllArticles } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
+import { draftMode } from "next/headers";
 
 export default async function HomePage() {
-  const articles = await getAllArticles();
+  const { isEnabled } = draftMode();
+  const articles = await getAllArticles(3, isEnabled);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">

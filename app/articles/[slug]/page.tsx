@@ -2,6 +2,7 @@ import { getAllArticles, getArticle } from "@/lib/api";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
 
 export async function generateStaticParams() {
   const allArticles = await getAllArticles();
@@ -14,7 +15,8 @@ export async function generateStaticParams() {
 export default async function KnowledgeArticlePage({
   params,
 }) {
-  const article = await getArticle(params.slug);
+  const { isEnabled } = draftMode();
+  const article = await getArticle(params.slug, isEnabled);
 
   if (!article) {
     notFound();
