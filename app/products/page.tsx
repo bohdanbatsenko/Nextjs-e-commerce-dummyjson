@@ -2,8 +2,7 @@
 
 import './page.module.css'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, useContext } from "react";
-import CartContext from '@/context/CartContext';
+import { useEffect, useState } from "react";
 import Pagination from '@/components/Pagination';
 import Button from '@/components/Button';
 import SearchForm from '@/components/SearchForm';
@@ -17,7 +16,6 @@ const ProductsPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const cartCtx = useContext(CartContext)
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -47,20 +45,6 @@ const ProductsPage = () => {
       : removeCategory(event.target.value);
   }
 
-  // const addCategory = (categorySlug: string) => {
-  //   const categoryToAdd = categories.find((category) => category.slug === categorySlug);
-    
-  //   if (categoryToAdd && !selectedCategories.some((category) => category.slug === categorySlug)) {
-  //     setSelectedCategories(prev => ([...prev, categoryToAdd]))
-  //   }
-  // }
-  
-  // const removeCategory = (categorySlug: string) => {
-  //   if(selectedCategories.some((category) => category.slug === categorySlug)){
-  //     const updatedCategories = selectedCategories.filter((category) => category.slug !== categorySlug);
-  //     setSelectedCategories(updatedCategories);
-  //   }
-  // }
   const addCategory = (category) => {
     setSearchTerm('')
     if(!selectedCategories.includes(category)){
@@ -115,13 +99,6 @@ const ProductsPage = () => {
     if(selectedCategories.length === 0){
       setFilteredProducts(products);
     } else{
-      // setFilteredProducts(
-      //   products.filter((productItem: Products) =>
-      //     productItem.products && productItem.products.some((item: Product) =>
-      //       selectedCategories.map((categoryItem: CategoryType) => categoryItem.slug).includes(item.category)
-      //     )
-      //   )
-      // );
       setFilteredProducts(
         products.filter((item) => selectedCategories.includes(item.category))
       );
@@ -141,11 +118,9 @@ const ProductsPage = () => {
           searchFormSubmitHandler={handleSearchFormSubmit}
         />
       </div>
-
       <div className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-x-8 gap-y-10 lg:grid-cols-5 px-5 md:px-10 lg:px-20'>
         <div className=''>
           <div className='mb-2'><Button onClick={handleReset}>Reset</Button></div>
-
           {categories.map((category) => (
             <div onClick={() => {
               //if(selectedCategories.includes(category.slug)){

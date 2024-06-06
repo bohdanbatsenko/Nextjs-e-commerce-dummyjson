@@ -15,7 +15,8 @@ const Pagination = props => {
     totalCount,
     siblingCount,
     pageSize
-  });
+  }) ?? [];
+  //});
 
   if (currentPage === 0 || paginationRange.length < 2) {
     return null;

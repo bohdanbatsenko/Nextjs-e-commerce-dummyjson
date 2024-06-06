@@ -7,17 +7,20 @@ import Link from 'next/link';
 import { useState, useContext } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { FaShoppingCart } from "react-icons/fa";
-import CartContext from '@/context/CartContext';
+import { useCart } from '@/hooks/useCart';
 
 const Header = ():JSX.Element => {
-  const cartCtx = useContext(CartContext)
+  const { cartTotalQty } = useCart()
+
   const pathname = usePathname()
   const [nav, setNav] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const totalCartItems = cartCtx.items.reduce((totalNumberOfItems, item) => {
-    return totalNumberOfItems + item.quantity;
-  }, 0)
+  // const totalCartItems = cartProducts
+  //   ? cartProducts.reduce((totalPrice, item) => { 
+  //     return totalPrice + item.quantity;
+  //   }, 0)
+  //   : 0;
 
   const handleNav = () => {
     setNav(!nav);
@@ -35,10 +38,10 @@ const Header = ():JSX.Element => {
           <Link className={`nav-link ${pathname === '/products' ? 'active' : ''}`} href="/products">Products</Link>
           <Link className='nav-link shop-cart relative' href="#" onClick={() => setIsOpen(true)}>
             <FaShoppingCart/>
-            {totalCartItems > 0 
+            {cartTotalQty > 0 
               ? <span className="absolute inset-0 object-right-top ml-8 -mt-3">
               <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-semibold leading-4 bg-amber-500 text-black">
-                {totalCartItems}
+                {cartTotalQty}
               </div>
             </span>
             : ''}
@@ -89,10 +92,10 @@ const Header = ():JSX.Element => {
       </div>
       <Link className='md:hidden nav-link shop-cart relative' href="#" onClick={() => setIsOpen(true)}>
         <FaShoppingCart/>
-        {totalCartItems > 0 
+        {cartTotalQty > 0 
          ? <span className="absolute inset-0 object-right-top ml-2 -mt-4">
           <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-amber-500 text-black">
-            {totalCartItems}
+            {cartTotalQty}
           </div>
         </span>
         : '' }

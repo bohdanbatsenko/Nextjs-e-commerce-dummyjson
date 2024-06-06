@@ -1,68 +1,63 @@
 'use client';
-import { useContext } from 'react';
-import CartContext from '@/context/CartContext';
+
+import Link from 'next/link';
+import { useCart } from '@/hooks/useCart';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
+import ItemContent from './itemContent';
 
 const Cart = () => {
-  const cartCtx = useContext(CartContext)
+  const { cartProducts, cartTotalQty, cartTotalAmount, handleClearCart } = useCart()
   const { notifyRemovedFromCart, notifyCartCleared } = toasterNotifier()
 
-  const handleRemoveFromCart = ({id, title}) => {
-    cartCtx.removeItem(id)
-    notifyRemovedFromCart(title)
+  if (!cartProducts || cartProducts.length === 0) {
+    return (
+      <div className='flex flex-col items-center mt-8'>
+        <div className='text-2xl'>Your cart is empty. Let's buy something!</div>
+        <div>
+          <Link
+              className="flex items-center justify-center rounded-md border border-transparent bg-gray-800 px-6 py-3 text-base font-medium text-white hover:bg-gray-500 mt-5" 
+              href="/products"
+            >
+              Go to products
+          </Link>
+        </div>
+      </div>
+    )
   }
 
-  const cartTotal = cartCtx.items.reduce((totalPrice, item) => totalPrice + item.quantity * item.price, 0)
+  // const handleRemoveFromCart = ({id, title}) => {
+  //   cartCtx.removeItem(id)
+  //   notifyRemovedFromCart(title)
+  // }
+
+  //const cartTotal = cartProducts.reduce((totalPrice, item) => totalPrice + item.quantity * item.price, 0)
 
   return (
     <>
-      <div className="flex-col flex items-center bg-white gap-8 p-10 text-black text-sm">
-      <h1 className="text-2xl font-bold">Cart</h1>
-      <div className="flex flex-col gap-4">
-        {cartCtx.items && cartCtx.items.map((item) => (
-          <div className="flex justify-between items-center" key={item.id}>
-            <div className="flex gap-4">
-              <img src={item.thumbnail} alt={item.title} className="rounded-md h-24" width='150' height='100'/>
-              <div className="flex flex-col">
-                <h1 className="text-lg font-bold">{item.title}</h1>
-                <p className="text-gray-600">{item.price}</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <button
-                className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
-                onClick={() => {
-                  cartCtx.addItem(item)
-                }}
-              >
-                +
-              </button>
-              <p>{item.quantity}</p>
-              <button
-                className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
-                onClick={() => {
-                  const cartItem = cartCtx.items.find((product) => product.id === item.id);
-                  if (cartItem.quantity === 1) {
-                    handleRemoveFromCart(item);
-                  } else {
-                    cartCtx.removeItem(item.id);
-                  }
-                }}
-              >
-                -
-              </button>
-            </div>
-          </div>
-        ))}
+      <div className="p-6 lg:max-w-7xl max-w-2xl md:mx-auto">
+      <h1 className="text-2xl font-bold text-center">Cart</h1>
+
+      <div className='grid grid-cols-5 text-xs gap-4 pb-2 items-center mt-8 '>
+        <div className='col-span-2 justify-self-start'>PRODUCT</div>
+        <div className='justify-self-center'>PRICE</div>
+        <div className='justify-self-center'>QUANTITY</div>
+        <div className='justify-self-end'>TOTAL</div>
       </div>
+      <div>
+        {Array.isArray(cartProducts) && cartProducts.map((item, index) => {
+          return <ItemContent key={index} item={item}/>
+        })}
+      </div>
+
       {
-        cartCtx.items ? (
-          <div className="flex flex-col justify-between items-center">
-        <h2 className="text-lg font-bold">Total: ${cartTotal}</h2>
+        cartProducts ? (
+          <div className="flex flex-col justify-between items-center mt-8">
+        <h2 className="text-lg font-bold">Total: ${cartTotalAmount}</h2>
+        <h2 className="text-lg font-bold">Total items: {cartTotalQty}</h2>
         <button
-          className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
+          className="mt-5 px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
           onClick={() => {
-            cartCtx.clearCart()
+            handleClearCart()
             notifyCartCleared()
           }}
         >
@@ -70,7 +65,9 @@ const Cart = () => {
         </button>
       </div>
         ) : (
-          <h1 className="text-lg font-bold">Your cart is empty</h1>
+          <div className='mt-5'>
+            <h1 className="text-lg font-bold">Your cart is empty</h1>
+          </div>
         )
       }
     </div>

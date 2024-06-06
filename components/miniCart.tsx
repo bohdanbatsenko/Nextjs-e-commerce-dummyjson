@@ -2,19 +2,22 @@
 
 import Link from 'next/link';
 import { FaRegTimesCircle } from "react-icons/fa";
-import { useContext } from 'react'
-import CartContext from '@/context/CartContext'
+import { useCart } from '@/hooks/useCart';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
 
 const MiniCart = ({isOpen, setIsOpen}) => {
-  const cartCtx = useContext(CartContext)
+  const { 
+    cartProducts, 
+    cartTotalQty, 
+    handleRemoveProductFromCart, 
+ } = useCart();
+
   const { notifyRemovedFromCart } = toasterNotifier()
 
   const handleRemoveFromCart = ({id, title}) => {
-    cartCtx.removeItem(id);
-    notifyRemovedFromCart(title)
+    handleRemoveProductFromCart(id);
+    notifyRemovedFromCart(title);
   }
-  const cartTotal = cartCtx.items.reduce((totalPrice, item) => totalPrice + item.quantity * item.price, 0)
 
   return (
     <div className={
@@ -52,9 +55,10 @@ const MiniCart = ({isOpen, setIsOpen}) => {
             <div className="mt-8">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {!cartCtx.items.length || cartCtx.items.length === 0 
+                  {!cartProducts 
                   ? (<div className="mt-4 lg:mt-6">No items in cart. Buy something!</div>)
-                  : (cartCtx.items.map((product) => (
+                  //: (cartProducts.map((product) => (
+                  : (Array.isArray(cartProducts) && cartProducts.map((product) => (
                     <li key={product.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
@@ -70,7 +74,7 @@ const MiniCart = ({isOpen, setIsOpen}) => {
                             <h3>
                               <Link 
                                 href={{
-                                  pathname: "products/product",
+                                  pathname: "/products/product",
                                   query: {id: product.id},
                                 }}
                               >{product.title}</Link>
@@ -86,11 +90,12 @@ const MiniCart = ({isOpen, setIsOpen}) => {
                               type="button"
                               className="font-medium text-indigo-600 hover:text-indigo-500"
                               onClick={() => {
-                                const cartItem = cartCtx.items.find((el) => el.id === product.id);
+                                const cartItem = cartProducts.find((el) => el.id === product.id);
                                 if (cartItem.quantity === 1) {
                                   handleRemoveFromCart(product);
-                                } else {
-                                  cartCtx.removeItem(product.id);
+                                } 
+                                else {
+                                  handleRemoveProductFromCart(product);
                                 }
                               }}
                             >
@@ -111,7 +116,7 @@ const MiniCart = ({isOpen, setIsOpen}) => {
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between text-base font-medium text-gray-900">
               <p>Subtotal</p>
-              <p>${cartTotal}</p>
+              <p>${cartTotalQty}</p>
             </div>
             <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
             <div className="mt-6">

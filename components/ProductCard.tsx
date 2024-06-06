@@ -2,22 +2,52 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useContext } from "react";
-import CartContext from '@/context/CartContext';
+import React, { useState, useEffect } from "react";
+// import CartContext from '@/context/CartContext';
+import { useCart } from '@/hooks/useCart';
 import Button from '@/components/Button';
 import { toasterNotifier } from '@/hooks/useToasterNotify';
+import { CartProductType } from '@/types/cartProductType';
 import { Product } from '@/types/product';
 
-const ProductCart = ({product}: {product: Product}) => {
-  const cartCtx = useContext(CartContext)
-  const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
-  const handleAddToCart = (product: Product) => {
-    cartCtx.addItem(product)
-  }
+interface ProductCardProps {
+  product: any;
+}
 
-  const handleRemoveFromCart = ({id, title}) => {
-    cartCtx.removeItem(id);
-    notifyRemovedFromCart(title);
+const ProductCard:React.FC<ProductCardProps> = ({product}) => {
+  const {handleAddProductToCart, cartProducts} = useCart(); 
+  const [isProductInCart, setIsProductInCart] = useState(false);
+  const [cartProduct, setCartProduct] = useState<CartProductType | null>(null);
+  const { notifyAddedToCart } = toasterNotifier()
+
+  useEffect(() => {
+    if (product) {
+      setCartProduct({
+        id: product.id,
+        title: product.title,
+        description: product.description,
+        quantity: 1,
+        category: product.category,
+        price: product.price,
+        thumbnail: product.thumbnail,        
+      })
+    }
+  }, [product])
+
+  useEffect(() => {
+    setIsProductInCart(false)
+    
+    if (product && Array.isArray(cartProducts)) {
+      const existingIndex = cartProducts.findIndex((item) => item.id === product.id);
+      if (existingIndex > -1) {
+        setIsProductInCart(true)
+      }
+    }
+  }, [cartProducts, product]);
+
+
+  if (!cartProduct) {
+    return <div>Loading...</div>;
   };
 
   return (
@@ -30,45 +60,45 @@ const ProductCart = ({product}: {product: Product}) => {
         <p className='mt-2 text-gray-600 text-sm'>{product.description.slice(0, 40)}...</p>
         <p className='mt-2 text-gray-600'>${product.price}</p>
       </div>
-      <div className='mt-2 md:mt-6 flex flex-col lg:flex-row justify-between items-center'>
+      <div className='mt-2 min-h-[60px]  content-end'>
+        {isProductInCart 
+          ? <div className='block w-full'><p className='text-slate-500'>Already in cart</p></div> 
+          : ''
+          }
+      <div className='md:mt-2 flex flex-col lg:flex-row justify-between items-center'>
         {
-          !cartCtx.items.find(item => item.id === product.id) ? (
-            <Button onClick={() => {
-              handleAddToCart(product)
-              notifyAddedToCart(product)
-              }
-            }>Add to cart</Button>
+          isProductInCart ? (
+          
+              <Link 
+                className="mt-2 lg:mt-0 px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700" 
+                href="/products/cart"
+              >
+                Go to cart
+              </Link>
+          
           ) : (
-            <div className="flex gap-4">
+            
               <Button onClick={() => {
-                  handleAddToCart(product)
+                handleAddProductToCart(cartProduct)
+                notifyAddedToCart(cartProduct)
                 }
-            }>+</Button>
-            <p className='text-gray-600'>{cartCtx.items.find(item => item.id === product.id).quantity}</p>
-            <Button
-              onClick={() => {
-                const cartItem = cartCtx.items.find((item) => item.id === product.id);
-                  if (cartItem.quantity === 1) {
-                    handleRemoveFromCart(product);
-                  } else {
-                    cartCtx.removeItem(product.id);
-                  }
-              }}>-</Button>
-          </div>
+              }>Add to cart
+            </Button>
           )
         }
-      <Link
-        href={{
-          pathname: "products/product",
-          query: {id: product.id},
-        }}
-        className="mt-2 lg:mt-0 px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
-      >
-      View
-      </Link>
+        <Link
+          href={{
+            pathname: "products/product",
+            query: {id: product.id},
+          }}
+          className="mt-2 lg:mt-0 px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
+          >
+        View
+        </Link>
+      </div>
     </div>
   </div>
   )
 };
 
-export default ProductCart;
+export default ProductCard;
