@@ -2,14 +2,14 @@
 
 import { useEffect, useState, useContext } from 'react';
 import { useSearchParams } from "next/navigation";
-import { Product } from '@/types/product';
+import type { Product as ProductType } from '@/types/product';
 import ProductDetails from './ProductDetails';
 
 
 const Product:React.FC = () => {
   const searchParams = useSearchParams()
   const id = searchParams.get("id")
-  const [product, setProduct] = useState<Product>();
+  const [product, setProduct] = useState<ProductType>();
   
   useEffect(() => {
     fetchProduct()
