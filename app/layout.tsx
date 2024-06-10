@@ -1,6 +1,9 @@
 import './index.css';
 import Header from '../components/Header';
-import { CartContextProvider } from '@/context/CartContext';
+//import { CartContextProvider } from '@/context/CartContext';
+import { ProductsProvider } from "@/context/products_context";
+import { FilterProvider } from "@/context/filter_context";
+import { CartProvider } from "@/context/cart_context";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,11 +16,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <CartContextProvider>
-         <ToastContainer />
-          <Header />
-          {children}
-        </CartContextProvider>
+      <ProductsProvider>
+        <FilterProvider>
+          <CartProvider>
+            <ToastContainer />
+              <Header />
+              {children}
+            </CartProvider>
+          </FilterProvider>
+        </ProductsProvider>
       </body>
     </html>
   )

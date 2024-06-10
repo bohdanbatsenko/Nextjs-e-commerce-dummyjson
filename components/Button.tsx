@@ -8,7 +8,7 @@ import {  type PropsWithChildren } from 'react';
 // }
 type ButtonProps = PropsWithChildren<{
   disabled?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 }>
 
 const Button = ({ disabled=false, onClick, children}: ButtonProps) => {
