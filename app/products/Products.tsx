@@ -1,21 +1,25 @@
 'use client';
 
 import './page.module.css'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState, useContext } from "react";
-import {useProductsContext} from '@/context/products_context';
-import {useFilterContext} from '@/context/filter_context';
+import { useProductsContext } from '@/context/products_context';
+import { useFilterContext } from '@/context/filter_context';
 import Pagination from '@/components/Pagination';
-import Button from '@/components/Button';
-import SearchForm from '@/components/SearchForm';
-import ProductCard from '@/components/ProductCard';
 import ListProducts from './ListProducts';
 import GridProducts from './GridProducts';
 
 let PageSize = 8;
 
 const Products = () => {
-  const { filtered_products: products, grid_view } = useFilterContext();
+  const { 
+    all_products,
+    filtered_products_count,
+    filtered_products: products, 
+    grid_view,
+    currentPage, 
+    updateCurrentPage  
+  } = useFilterContext();
+
+
   const {
     products_loading: loading,
     products_error: error,
@@ -35,10 +39,18 @@ const Products = () => {
       );
     }
 
-    if (grid_view === false) {
-      return <ListProducts products={products} />;
-    }
-    return <GridProducts products={products} />;
+    return <>
+      {grid_view 
+        ? <GridProducts products={products} />
+        : <ListProducts products={products} />
+      }
+      <Pagination 
+        onPageChange={updateCurrentPage} 
+        currentPage={currentPage} 
+        totalCount={filtered_products_count}
+        pageSize={PageSize}
+      />
+    </>
 }
 
 export default Products;

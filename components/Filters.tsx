@@ -3,8 +3,6 @@
 import Button from "./Button";
 import { useState, useEffect } from "react";
 import { useFilterContext } from "@/context/filter_context";
-import { getUniqueValues } from "@/utils/helpers";
-
 
 const Filters = () => {
   const [categories, setCategories] = useState();
@@ -15,14 +13,13 @@ const Filters = () => {
     clearFilters,
   } = useFilterContext();
 
+  
   const filterHandler = (e) => {
-    updateFilters(e);
-    console.log(e.target.value)
-    console.log(e.target.checked)
+    const { name, value } = e.target;
+    if (name === "category") {
+      updateFilters({ name, value, checked: e.target.checked });
+    }
   };
-
-  // const categories = getUniqueValues(products, "category");
-  //   console.log('Categories are: ',categories)
 
   const getCategories = () => { 
     fetch('https://dummyjson.com/products/categories')
@@ -36,7 +33,7 @@ const Filters = () => {
   useEffect(() => {
     getCategories()
   }, [])
-  console.log(categories)
+
   if (products.length > 0) {
     return (
       <div>
@@ -60,6 +57,7 @@ const Filters = () => {
                     <div className="form-check">
                       <input 
                         className="w-5 h-5 cursor-pointer appearance-none border border-gray-800  rounded-md mr-2 hover:border-amber-500 hover:bg-amber-100 checked:bg-no-repeat checked:bg-center checked:border-amber-500 checked:bg-amber-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')]" 
+                        name="category"
                         type="checkbox" 
                         value={category.slug} 
                         id={category.slug}
@@ -72,20 +70,6 @@ const Filters = () => {
                     </div> 
                 </div>
               ))}
-                {/* {categories.map((c, index) => (
-                  <input
-                    key={index}
-                    type='checkbox'
-                    name='category'
-                    className={category === c ? "active" : null}
-                    onClick={updateFilters}
-                    data-category={c}
-                  >
-                  <label className="inline-block ps-[0.15rem] hover:cursor-pointer pl-2" htmlFor={c.slug}>
-                  {c}     
-                  </label>
-   
-                ))} */}
               </div>
             </div>
             <div className='form__control'>

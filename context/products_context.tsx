@@ -11,20 +11,10 @@ import {
   GET_SINGLE_PRODUCT_BEGIN,
   GET_SINGLE_PRODUCT_ERROR,
   GET_SINGLE_PRODUCT_SUCCESS,
+  UPDATE_CURRENT_PAGE
 } from "./actions";
 
 import { products_reducer as reducer } from "./products_reducer";
-
-const initialState = {
-  isSidebarOpen: false,
-  products_loading: false,
-  products_error: false,
-  products: [],
-  popular_products: [],
-  single_product_loading: false,
-  single_product_error: false,
-  single_product: {},
-};
 
 type ProductsContextType = {
   isSidebarOpen: boolean;
@@ -38,6 +28,19 @@ type ProductsContextType = {
   openSidebar: () => void;
   closeSidebar: () => void;
   fetchSingleProduct: (params: any) => void;
+  currentPage: string;
+};
+
+const initialState = {
+  isSidebarOpen: false,
+  products_loading: false,
+  products_error: false,
+  products: [],
+  popular_products: [],
+  single_product_loading: false,
+  single_product_error: false,
+  single_product: {},
+  currentPage: 1
 };
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
@@ -74,20 +77,25 @@ export const ProductsProvider = ({ children }) => {
     fetchProducts(API_ENDPOINT);
   }, []);
 
-  //? Handlers
   const openSidebar = () => {
     dispatch({ type: OPEN_SIDEBAR });
   };
   const closeSidebar = () => {
     dispatch({ type: CLOSE_SIDEBAR });
   };
+
+  const updateCurrentPage = (pageNumber) => {
+    dispatch({ type: UPDATE_CURRENT_PAGE, payload: pageNumber });
+  };
+
   return (
     <ProductsContext.Provider
       value={{
          ...state, 
          openSidebar, 
          closeSidebar, 
-         fetchSingleProduct 
+         fetchSingleProduct,
+         updateCurrentPage
         }}
     >
       {children}
