@@ -11,14 +11,12 @@ let PageSize = 8;
 
 const Products = () => {
   const { 
-    all_products,
     filtered_products_count,
     filtered_products: products, 
     grid_view,
     currentPage, 
     updateCurrentPage  
   } = useFilterContext();
-
 
   const {
     products_loading: loading,
@@ -35,7 +33,7 @@ const Products = () => {
 
     if (products.length < 1) {
       return (
-        <h4>Sorry, no products matched your search...</h4>
+        <h4>Wait, products are loading...</h4>
       );
     }
 

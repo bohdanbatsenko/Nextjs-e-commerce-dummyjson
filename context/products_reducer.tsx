@@ -8,8 +8,7 @@ import {
   GET_PRODUCTS_SUCCESS,
   GET_SINGLE_PRODUCT_BEGIN,
   GET_SINGLE_PRODUCT_ERROR,
-  GET_SINGLE_PRODUCT_SUCCESS,
-  UPDATE_CURRENT_PAGE
+  GET_SINGLE_PRODUCT_SUCCESS
 } from "./actions";
 
 export const products_reducer = (state, action) => {
@@ -61,10 +60,6 @@ export const products_reducer = (state, action) => {
       single_product_loading: false,
       single_product_error: true,
     };
-  }
-
-  if (type === UPDATE_CURRENT_PAGE) {
-    return { ...state, currentPage: payload };
   }
 
   throw new Error(`No Matching "${type}" - action type `);

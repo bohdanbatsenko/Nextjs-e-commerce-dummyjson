@@ -13,14 +13,6 @@ const Filters = () => {
     clearFilters,
   } = useFilterContext();
 
-  
-  const filterHandler = (e) => {
-    const { name, value } = e.target;
-    if (name === "category") {
-      updateFilters({ name, value, checked: e.target.checked });
-    }
-  };
-
   const getCategories = () => { 
     fetch('https://dummyjson.com/products/categories')
     .then(res => res.json())  
@@ -38,19 +30,22 @@ const Filters = () => {
     return (
       <div>
         <div className='content'>
-          <form className='filter__form' onSubmit={(e) => e.preventDefault()}>
-            <div className='form__control'>
+          <form 
+            className='filter__form' 
+            onSubmit={(e) => e.preventDefault()}>
+            <div className='relative w-4/5 mb-4'>
+            <label htmlFor="voice-search" className="sr-only">Search</label>
               <input
                 type='text'
                 name='text'
-                placeholder='Search'
-                className='search__input'
+                placeholder='Search product'
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-5 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                 value={text}
                 onChange={updateFilters}
               />
             </div>
-            <div className='form__control'>
-              <h4>Categories</h4>
+            <div className='form__control mb-4'>
+              <h4 className="text-xl mb-2">Categories</h4>
               <div className='form__categories'>
               {categories && categories.map((category) => (
                 <div key={category.slug}> 
@@ -62,7 +57,7 @@ const Filters = () => {
                         value={category.slug} 
                         id={category.slug}
                         checked={categoryFilter.includes(category.slug)}
-                        onChange={filterHandler}
+                        onChange={updateFilters}
                       />
                       <label className="inline-block ps-[0.15rem] hover:cursor-pointer pl-2" htmlFor={category.slug}>
                       {category.name}     
@@ -73,7 +68,7 @@ const Filters = () => {
               </div>
             </div>
             <div className='form__control'>
-              <h4>Price</h4>
+              <h4 className="text-xl mb-2">Price</h4>
               <p className='price'>${price}</p>
               <input
                 type='range'

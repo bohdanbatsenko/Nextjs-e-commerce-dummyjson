@@ -10,8 +10,7 @@ import {
   GET_PRODUCTS_SUCCESS,
   GET_SINGLE_PRODUCT_BEGIN,
   GET_SINGLE_PRODUCT_ERROR,
-  GET_SINGLE_PRODUCT_SUCCESS,
-  UPDATE_CURRENT_PAGE
+  GET_SINGLE_PRODUCT_SUCCESS
 } from "./actions";
 
 import { products_reducer as reducer } from "./products_reducer";
@@ -28,7 +27,6 @@ type ProductsContextType = {
   openSidebar: () => void;
   closeSidebar: () => void;
   fetchSingleProduct: (params: any) => void;
-  currentPage: string;
 };
 
 const initialState = {
@@ -40,7 +38,6 @@ const initialState = {
   single_product_loading: false,
   single_product_error: false,
   single_product: {},
-  currentPage: 1
 };
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
@@ -84,9 +81,6 @@ export const ProductsProvider = ({ children }) => {
     dispatch({ type: CLOSE_SIDEBAR });
   };
 
-  const updateCurrentPage = (pageNumber) => {
-    dispatch({ type: UPDATE_CURRENT_PAGE, payload: pageNumber });
-  };
 
   return (
     <ProductsContext.Provider
@@ -94,8 +88,7 @@ export const ProductsProvider = ({ children }) => {
          ...state, 
          openSidebar, 
          closeSidebar, 
-         fetchSingleProduct,
-         updateCurrentPage
+         fetchSingleProduct
         }}
     >
       {children}
