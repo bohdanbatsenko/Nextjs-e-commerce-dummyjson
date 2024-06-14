@@ -2,23 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useContext } from "react";
-import CartContext from '@/context/CartContext';
-import Button from '@/components/Button';
-import { toasterNotifier } from '@/hooks/useToasterNotify';
 import { Product } from '@/types/product';
 
 const ProductCart = ({product}: {product: Product}) => {
-  const cartCtx = useContext(CartContext)
-  const { notifyAddedToCart, notifyRemovedFromCart } = toasterNotifier()
-  const handleAddToCart = (product: Product) => {
-    cartCtx.addItem(product)
-  }
-
-  const handleRemoveFromCart = ({id, title}) => {
-    cartCtx.removeItem(id);
-    notifyRemovedFromCart(title);
-  };
 
   return (
     <div key={product.id} className='bg-white shadow-md rounded-lg px-2 py-2 md:px-5 md:py-5 flex flex-col justify-between'>
@@ -30,33 +16,7 @@ const ProductCart = ({product}: {product: Product}) => {
         <p className='mt-2 text-gray-600 text-sm'>{product.description.slice(0, 40)}...</p>
         <p className='mt-2 text-gray-600'>${product.price}</p>
       </div>
-      <div className='mt-2 md:mt-6 flex flex-col lg:flex-row justify-between items-center'>
-        {
-          !cartCtx.items.find(item => item.id === product.id) ? (
-            <Button onClick={() => {
-              handleAddToCart(product)
-              notifyAddedToCart(product)
-              }
-            }>Add to cart</Button>
-          ) : (
-            <div className="flex gap-4">
-              <Button onClick={() => {
-                  handleAddToCart(product)
-                }
-            }>+</Button>
-            <p className='text-gray-600'>{cartCtx.items.find(item => item.id === product.id).quantity}</p>
-            <Button
-              onClick={() => {
-                const cartItem = cartCtx.items.find((item) => item.id === product.id);
-                  if (cartItem.quantity === 1) {
-                    handleRemoveFromCart(product);
-                  } else {
-                    cartCtx.removeItem(product.id);
-                  }
-              }}>-</Button>
-          </div>
-          )
-        }
+      <div className='mt-2 md:mt-6 flex flex-col lg:flex-row justify-center items-center'>
       <Link
         href={{
           pathname: "products/product",

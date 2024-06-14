@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useContext, useState, useEffect, useReducer } from "react";
 import { cart_reducer as reducer } from "./cart_reducer";
 
 import {
@@ -17,11 +17,14 @@ type CartContextType = {
   total_price: number;
   total_items: number;
   isCheckout: boolean;
+  isMiniCartOpen: boolean;
   addToCart: (product: any, amount: number) => void;
   toggleAmount: (id: string, value: number) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
   checkout: () => void;
+  openMiniCart: () => void;
+  closeMiniCart: () => void;
 };
 const getLocalStorage = () => {
   if (typeof window !== 'undefined') {
@@ -45,6 +48,15 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
+
+  const openMiniCart = () => {
+    setIsMiniCartOpen(true);
+  };
+
+  const closeMiniCart = () => {
+    setIsMiniCartOpen(false);
+  };
 
   useEffect(() => {
     dispatch({ type: COUNT_CART_TOTALS });
@@ -53,7 +65,6 @@ export const CartProvider = ({ children }) => {
     }
   }, [state.cart]);
 
-  //? Handlers
   const addToCart = (product, amount) => {
     dispatch({ type: ADD_TO_CART, payload: { product, amount } });
   };
@@ -83,6 +94,9 @@ export const CartProvider = ({ children }) => {
         removeItem,
         clearCart,
         checkout,
+        isMiniCartOpen,
+        openMiniCart,
+        closeMiniCart
       }}
     >
       {children}

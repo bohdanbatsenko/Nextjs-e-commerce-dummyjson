@@ -26,11 +26,11 @@ export const cart_reducer = (state, action) => {
       });
       return { ...state, cart: tempCart };
     } else {
-      const { id, title, image, price } = product;
+      const { id, title, thumbnail, price } = product;
       const newItem = {
         id,
         title,
-        image,
+        image: thumbnail,
         price,
         amount,
       };

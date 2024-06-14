@@ -1,26 +1,23 @@
-
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
-const Stars = ({ stars = { rate: "" } }) => {
-  const { rate } = stars;
-
+const Stars = ({ stars = 0 }) => {
   const tempStars = Array.from({ length: 5 }, (_, index) => {
-    const number = index + 0.5;
-    const rateNumber = parseFloat(rate);
+  const number = index + 1;
+
     return (
       <span key={index}>
-        {rateNumber >= index + 1  ? (
-          <FaRegStar />
-        ) : rateNumber >= number ? (
+        {stars >= number ? (
+          <FaStar />
+        ) : stars >= number - 0.5 ? (
           <FaStarHalfAlt />
         ) : (
-          <FaStar />
+          <FaRegStar />
         )}
       </span>
     );
   });
 
-  return <div>{tempStars}</div>;
+  return <div className="flex">{tempStars}</div>;
 };
 
 export default Stars;

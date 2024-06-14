@@ -1,6 +1,3 @@
-
-import Link from "next/link";
-import Button from "@/components/Button";
 import ProductCard from "@/components/ProductCard";
 
 const GridProducts = ({ products }) => {

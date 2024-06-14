@@ -4,20 +4,16 @@ import './header.css'
 import MiniCart from './miniCart'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { FaShoppingCart } from "react-icons/fa";
-import CartContext from '@/context/CartContext';
+import { useCartContext } from '@/context/cart_context';
 
-const Header = ():JSX.Element => {
-  const cartCtx = useContext(CartContext)
+const Header = () => {
+  const { total_items, openMiniCart } = useCartContext();
   const pathname = usePathname()
   const [nav, setNav] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const totalCartItems = cartCtx.items.reduce((totalNumberOfItems, item) => {
-    return totalNumberOfItems + item.quantity;
-  }, 0)
+  //const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleNav = () => {
     setNav(!nav);
@@ -25,7 +21,6 @@ const Header = ():JSX.Element => {
 
   return (
     <div className='bg-black flex justify-between items-center h-24 mx-auto px-4 text-white'>
-      {/* Logo */}
       <h2 className='w-full text-3xl font-bold text-amber-500'>NEXT SHOP</h2>
 
       {/* Desktop Navigation */}
@@ -33,12 +28,12 @@ const Header = ():JSX.Element => {
         <ul className='hidden md:flex md:items-center'>
           <Link className={`nav-link ${pathname === '/' ? 'active' : ''}`} href="/">Home</Link>
           <Link className={`nav-link ${pathname === '/products' ? 'active' : ''}`} href="/products">Products</Link>
-          <Link className='nav-link shop-cart relative' href="#" onClick={() => setIsOpen(true)}>
+          <Link className='nav-link shop-cart relative' href="#" onClick={openMiniCart}>
             <FaShoppingCart/>
-            {totalCartItems > 0 
+            {total_items > 0 
               ? <span className="absolute inset-0 object-right-top ml-8 -mt-3">
               <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-semibold leading-4 bg-amber-500 text-black">
-                {totalCartItems}
+                {total_items}
               </div>
             </span>
             : ''}
@@ -87,20 +82,19 @@ const Header = ():JSX.Element => {
           }}
         ></section>
       </div>
-      <Link className='md:hidden nav-link shop-cart relative' href="#" onClick={() => setIsOpen(true)}>
+      <Link className='md:hidden nav-link shop-cart relative' href="#" onClick={openMiniCart}>
         <FaShoppingCart/>
-        {totalCartItems > 0 
+        {total_items > 0 
          ? <span className="absolute inset-0 object-right-top ml-2 -mt-4">
           <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-amber-500 text-black">
-            {totalCartItems}
+            {total_items}
           </div>
         </span>
         : '' }
       </Link>
-      <MiniCart isOpen={isOpen} setIsOpen={setIsOpen}></MiniCart>
+      <MiniCart/>
     </div>
   );
 }
-
 
 export default Header;

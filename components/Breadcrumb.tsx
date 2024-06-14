@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 
-const Breadcrumb = ({ title, products }) => {
+type BreadcrumbProps = {
+  title: string,
+  products?: boolean
+}
+const Breadcrumb:React.FC<BreadcrumbProps> = ({ title, products }) => {
   return (
     <div>
       <Link href='/'>Home /</Link>
-      {products && <Link href='/products'> prodcuts / </Link>}
-      <span>  {title && title.slice(20)}</span>
+      {products && <Link href='/products'> Products / </Link>}
+      <span>  {title }</span>
     </div>
   );
 };

@@ -62,7 +62,7 @@ export const ProductsProvider = ({ children }) => {
   const fetchSingleProduct = async (params) => {
     dispatch({ type: GET_SINGLE_PRODUCT_BEGIN });
     try {
-      const response = await fetch(`${API_ENDPOINT}/${params}`);
+      const response = await fetch(`https://dummyjson.com/products/${params}`);
       const singleProduct = await response.json();
       dispatch({ type: GET_SINGLE_PRODUCT_SUCCESS, payload: singleProduct });
     } catch (error) {
@@ -73,6 +73,21 @@ export const ProductsProvider = ({ children }) => {
   useEffect(() => {
     fetchProducts(API_ENDPOINT);
   }, []);
+
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await fetch('api/products/products');
+  //       const data = await response.json();
+  //       setProducts(data);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       setError(error.message);
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchProducts();
+  // }, []);
 
   const openSidebar = () => {
     dispatch({ type: OPEN_SIDEBAR });
@@ -91,7 +106,7 @@ export const ProductsProvider = ({ children }) => {
          fetchSingleProduct
         }}
     >
-      {children}
+      {children}  
     </ProductsContext.Provider>
   );
 };

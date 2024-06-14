@@ -24,11 +24,15 @@ const Products = () => {
     } = useProductsContext();
 
     if (error) {
-      console.log('Error');
+      return (
+        <h4>Oops, something went wrong...</h4>
+      );
     }
 
     if (loading) {
-      console.log('Loading');
+      return (
+        <h4>Wait, products are loading...</h4>
+      );
     }
 
     if (products.length < 1) {

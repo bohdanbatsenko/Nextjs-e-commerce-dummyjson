@@ -9,10 +9,10 @@ import Sort from "@/components/Sort";
 const ProductsPage = () => {
   return (
     <main>
-      <Breadcrumb title="products" products={console.log('products')}/>
       
-      <div className='flex flex-col sm:flex-row justify-between items-center px-10 lg:px-20 py-5'>
-        <h1 className='text-2xl uppercase font-bold mt-10 text-center mb-10'>Shop</h1>
+      <div className='px-10 lg:px-20 py-5'>
+        <Breadcrumb title="products" products={console.log('products')}/>
+        <h1 className='text-2xl uppercase font-bold mt-10 mb-10'>Shop</h1>
           
       </div>
 

@@ -1,19 +1,19 @@
 'use client';
+import Button from "./Button";
 
 const AmountButtons = ({ increase, decrease, amount }) => {
   return (
-    <div>
-      <button
-        type='button'
-        className={amount < 2 ? "opacity " : undefined}
+    <div className="flex gap-4">
+      <Button
         onClick={decrease}
       >
         <span>-</span>
-      </button>
+      </Button>
       <span>{amount}</span>
-      <button type='button' onClick={increase}>
+      <Button 
+        onClick={increase}>
         <span>+</span>
-      </button>
+      </Button>
     </div>
   );
 };
