@@ -68,7 +68,8 @@ const Product = () => {
           <div className="p-6 lg:max-w-7xl max-w-2xl max-lg:mx-auto">
           <div className="grid items-start grid-cols-1 lg:grid-cols-5 gap-12">
             <div className="lg:col-span-3 flex flex-col justify-center items-center bg-gray-100 lg:sticky top-0 text-center center p-4">
-              {selectedImage && <img
+              {selectedImage && 
+              <Image
                 src={selectedImage} 
                 width={300} 
                 height={280} 
@@ -79,7 +80,7 @@ const Product = () => {
               <div className="flex flex-wrap gap-x-12 gap-y-6 justify-center mx-auto">
                 {product.images && product.images.map((image, index) => (
                   // <Image key={index} src={image} width={120} height={100} alt="Product" className="object-cover w-24 cursor-pointer" />
-                  <img
+                  <Image
                     key={index} 
                     src={image} 
                     width={120} 
