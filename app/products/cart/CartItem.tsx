@@ -11,11 +11,11 @@ const CartItem = ({ title, price, amount, id, image }) => {
   const croppedTitle = title ? title.substring(0, 25) + '...' : title;
 
   const increase = () => {
-    toggleAmount(id, amount + 1);
+    toggleAmount(id, 'inc');
   };
   
   const decrease = () => {
-    toggleAmount(id, amount - 1);
+    toggleAmount(id, 'dec');
   };
   
   return <article className='w-full lg:w-4/5 flex items-center gap-1 sm:gap-2 md:gap-3'>

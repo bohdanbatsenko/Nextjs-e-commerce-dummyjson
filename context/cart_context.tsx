@@ -19,7 +19,7 @@ type CartContextType = {
   isCheckout: boolean;
   isMiniCartOpen: boolean;
   addToCart: (product: any, amount: number) => void;
-  toggleAmount: (id: string, value: number) => void;
+  toggleAmount: (id: string, value: string) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
   checkout: () => void;
@@ -69,7 +69,7 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: ADD_TO_CART, payload: { product, amount } });
   };
 
-  const toggleAmount = (id, value) => {
+  const toggleAmount = (id:string, value:string) => {
     dispatch({ type: TOGGLE_CART_ITEM, payload: { id, value } });
   };
 
