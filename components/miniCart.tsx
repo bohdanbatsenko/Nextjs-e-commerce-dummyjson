@@ -46,7 +46,7 @@ const MiniCart = () => {
             <div className="mt-8">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {!cart.length 
+                  {!cart && cart.length 
                   ? (<div className="mt-4 lg:mt-6">No items in cart. Buy something!</div>)
                   : (cart.map((product) => (
                     <li key={product.id} className="flex py-6">

@@ -11,7 +11,7 @@ const ProductsPage = () => {
     <main>
       
       <div className='px-10 lg:px-20 py-5'>
-        <Breadcrumb title="products" products={console.log('products')}/>
+        <Breadcrumb title="products" products/>
         <h1 className='text-2xl uppercase font-bold mt-10 mb-10'>Shop</h1>
           
       </div>

@@ -1,13 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import Button from '@/components/Button';
 import Breadcrumb from '@/components/Breadcrumb';
 import AddToCart from '@/components/AddToCart';
 import Stars from '@/components/Stars';
 import { useEffect, useState, useContext } from 'react';
-import { toasterNotifier } from '@/hooks/useToasterNotify';
 import { useSearchParams } from "next/navigation";
 import { useProductsContext } from "@/context/products_context";
 
@@ -34,7 +31,7 @@ const Product = () => {
 
   useEffect(() => {
     if (product && product.thumbnail) {
-        setSelectedImage(product.thumbnail);
+      setSelectedImage(product.thumbnail);
     }
 }, [product]);
 
@@ -71,8 +68,7 @@ const Product = () => {
           <div className="p-6 lg:max-w-7xl max-w-2xl max-lg:mx-auto">
           <div className="grid items-start grid-cols-1 lg:grid-cols-5 gap-12">
             <div className="lg:col-span-3 flex flex-col justify-center items-center bg-gray-100 lg:sticky top-0 text-center center p-4">
-              {selectedImage &&<Image 
-                //src={product.thumbnail} 
+              {selectedImage && <img
                 src={selectedImage} 
                 width={300} 
                 height={280} 
@@ -83,7 +79,7 @@ const Product = () => {
               <div className="flex flex-wrap gap-x-12 gap-y-6 justify-center mx-auto">
                 {product.images && product.images.map((image, index) => (
                   // <Image key={index} src={image} width={120} height={100} alt="Product" className="object-cover w-24 cursor-pointer" />
-                  <Image 
+                  <img
                     key={index} 
                     src={image} 
                     width={120} 
