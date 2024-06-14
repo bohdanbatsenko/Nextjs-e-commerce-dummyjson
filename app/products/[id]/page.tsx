@@ -23,7 +23,6 @@ const Product = () => {
   if (!product) {
     return <div>Loading...</div>;
   }
-  //console.log(product.images)
 
   useEffect(() => {
     fetchSingleProduct(id);

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useFilterContext } from "@/context/filter_context";
 
 const Filters = () => {
-  const [categories, setCategories] = useState();
+  const [categories, setCategories] = useState([]);
   const {
     filters: { text, category: categoryFilter, min_price, max_price, price },
     updateFilters,
