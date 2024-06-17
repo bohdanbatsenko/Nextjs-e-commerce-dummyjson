@@ -42,10 +42,10 @@ const MiniCart = () => {
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
                   {!cart
-                  ? (<div className="mt-4 lg:mt-6">No items in cart. Buy something!</div>)
-                  : cart.map((product) => (
-                    <MiniCartItem key={product.id} product={product}/>
-                  ))
+                    ? (<div className="mt-4 lg:mt-6">No items in cart. Buy something!</div>)
+                    : cart.map((product, index) => (
+                      <MiniCartItem key={index} product={product}/>
+                    ))
                   }
                 </ul>
               </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import './header.css'
-import MiniCart from './MiniCart'
+import MiniCart from './MiniCart';
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
 import { useState } from 'react';
@@ -91,7 +91,7 @@ const Header = () => {
         </span>
         : '' }
       </Link>
-      <MiniCart/>
+      <MiniCart />
     </div>
   );
 }
