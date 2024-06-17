@@ -1,12 +1,22 @@
 'use client'
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { FaRegTimesCircle } from "react-icons/fa";
 import { useCartContext } from '@/context/cart_context';
 import MiniCartItem from './MiniCartItem';
 
 const MiniCart = () => {
+  const [ isClient, setIsClient ] = useState(false)
   const { cart, total_items, total_price, isMiniCartOpen, closeMiniCart } = useCartContext();
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // if (!cart || cart.length < 1) {
+  //   return (<div>No items</div>);
+  // }
 
   return (
     <div className={
@@ -41,12 +51,9 @@ const MiniCart = () => {
             <div className="mt-8">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {!cart
-                    ? (<div className="mt-4 lg:mt-6">No items in cart. Buy something!</div>)
-                    : cart.map((product, index) => (
-                      <MiniCartItem key={index} product={product}/>
-                    ))
-                  }
+                  {isClient && cart && cart.length ? cart.map((product) => (
+                      <MiniCartItem key={product.id} product={product}/>
+                  )) : (<div>No items in cart. Let's buy something!</div>)}
                 </ul>
               </div>
             </div>

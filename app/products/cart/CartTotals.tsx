@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 const CartTotals = () => {
   const { total_items, total_price, checkout } = useCartContext();
+  
   return (
     <article className='border-2 border-amber-500 p-4 lg:self-start'>
       <div>

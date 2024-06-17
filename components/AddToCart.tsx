@@ -1,7 +1,6 @@
 'use client';
 
 import  { useState } from "react";
-import Link from "next/link";
 import Button from "./Button";
 import AmountButtons from "./AmountButtons";
 import { toasterNotifier } from '@/hooks/useToasterNotify';
@@ -10,11 +9,8 @@ import { useCartContext } from "@/context/cart_context";
 const AddToCart = ({ product }) => {
   const { addToCart, openMiniCart } = useCartContext();
   const { notifyAddedToCart } = toasterNotifier()
-
-  //? Local State
   const [amount, setAmount] = useState(1);
 
-  //? Handlers
   const increase = () => {
     setAmount((oldAmount) => oldAmount + 1);
   };

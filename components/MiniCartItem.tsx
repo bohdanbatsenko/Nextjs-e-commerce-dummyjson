@@ -7,6 +7,7 @@ import { useCartContext } from '@/context/cart_context';
 
 const MiniCartItem = ({product}) => {
   const { toggleAmount, removeItem } = useCartContext();
+  
   return (
     <li key={product.id} className="flex py-6">
     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -25,7 +26,7 @@ const MiniCartItem = ({product}) => {
           <h3>
             <Link 
               href={{
-                pathname: "products/product",
+                pathname: "products/product/",
                 query: {id: product.id},
               }}
             >{product.title}</Link>

@@ -6,6 +6,7 @@ import { useFilterContext } from '@/context/filter_context';
 import Pagination from '@/components/Pagination';
 import ListProducts from './ListProducts';
 import GridProducts from './GridProducts';
+import { Suspense } from 'react';
 
 let PageSize = 8;
 
@@ -29,22 +30,22 @@ const Products = () => {
       );
     }
 
-    if (loading) {
-      return (
-        <h4>Wait, products are loading...</h4>
-      );
-    }
+    // if (loading) {
+    //   return (
+    //     <h4>Wait, products are loading...</h4>
+    //   );
+    // }
 
-    if (products.length < 1) {
-      return (
-        <h4>Wait, products are loading...</h4>
-      );
-    }
+    // if (products.length < 1) {
+    //   return (
+    //     <h4>Wait, products are loading...</h4>
+    //   );
+    // }
 
     return <>
       {grid_view 
-        ? <GridProducts products={products} />
-        : <ListProducts products={products} />
+        ? <Suspense fallback={<div>Loading...</div>}><GridProducts products={products} /></Suspense>
+        : <Suspense fallback={<div>Loading...</div>}><ListProducts products={products} /></Suspense>
       }
       <Pagination 
         onPageChange={updateCurrentPage} 

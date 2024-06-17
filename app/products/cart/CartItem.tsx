@@ -28,7 +28,7 @@ const CartItem = ({ title, price, amount, id, image }) => {
       <div className='item__info flex grow items-start justify-center flex-col py-2 md:size-full'>
         <Link 
         href={{
-          pathname: "/products/product",
+          pathname: "/products/product/",
           query: {id},
         }}
         title={title}

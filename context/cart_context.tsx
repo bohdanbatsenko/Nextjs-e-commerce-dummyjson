@@ -13,7 +13,7 @@ import {
 } from "./actions";
 
 type CartContextType = {
-  cart: any[];
+  cart: any[] | undefined;
   total_price: number;
   total_items: number;
   isCheckout: boolean;
@@ -38,8 +38,15 @@ const getLocalStorage = () => {
   }
 };
 
+const setLocalStorage = (cart) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+}
+
 const initialState = {
-  cart: getLocalStorage(),
+  //cart: getLocalStorage(),
+  cart: getLocalStorage() || [],
   total_price: 0,
   total_items: 0,
   isCheckout: false,
@@ -48,9 +55,10 @@ const initialState = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }) => {
+  const [ isClient, setIsClient ] = useState(false)
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
-
+  
   const openMiniCart = () => {
     setIsMiniCartOpen(true);
   };
@@ -60,10 +68,12 @@ export const CartProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    setIsClient(true)
     dispatch({ type: COUNT_CART_TOTALS });
-    if (typeof window !== 'undefined') {
-      localStorage.setItem("cart", JSON.stringify(state.cart));
-    }
+    setLocalStorage(state.cart)
+    // if (typeof window !== 'undefined') {
+    //   localStorage.setItem("cart", JSON.stringify(state.cart));
+    // }
   }, [state.cart]);
 
   const addToCart = (product, amount) => {

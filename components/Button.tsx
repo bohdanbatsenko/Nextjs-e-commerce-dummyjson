@@ -1,11 +1,4 @@
 import {  type PropsWithChildren } from 'react';
-//import { ReactNode } from "react";
-
-// type ButtonProps = {
-//   disabled?: boolean;
-//   onClick: () => void;
-//   children: ReactNode;
-// }
 type ButtonProps = PropsWithChildren<{
   disabled?: boolean;
   onClick?: () => void;
