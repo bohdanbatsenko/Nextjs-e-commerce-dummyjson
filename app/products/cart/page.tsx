@@ -1,5 +1,4 @@
 'use client';
-//import CartContext from '@/context/CartContext';
 import { useCartContext } from '@/context/cart_context';
 import Button from '@/components/Button';
 import Link from 'next/link';
@@ -12,7 +11,7 @@ import EmptyCart from './EmptyCart';
 const Cart = () => {
   const { cart, clearCart } = useCartContext();
 
-  if (cart?.length < 1) {
+  if (cart && cart.length < 1) {
     return <EmptyCart />;
   }
 
@@ -22,9 +21,7 @@ const Cart = () => {
     <div className='grid md:grid-cols-3 mt-4 md:mt-8 lg:px-10 md:gap-6'>
       <div className='cart-content grid gap-1 md:gap-2 md:col-span-2'>
         <div className='cart__items p-2'>
-          {!cart 
-            ? 'No items in cart'
-            : cart.map((item, index) => (
+          {cart && cart.map((item, index) => (
             <CartItem key={index} {...item} />
           ))}
         </div>

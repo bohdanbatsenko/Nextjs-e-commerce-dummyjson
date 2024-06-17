@@ -1,7 +1,7 @@
 'use client';
 
 import './header.css'
-import MiniCart from './miniCart'
+import MiniCart from './MiniCart'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
 import { useState } from 'react';
@@ -13,7 +13,6 @@ const Header = () => {
   const { total_items, openMiniCart } = useCartContext();
   const pathname = usePathname()
   const [nav, setNav] = useState<boolean>(false);
-  //const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleNav = () => {
     setNav(!nav);

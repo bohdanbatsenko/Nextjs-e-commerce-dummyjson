@@ -26,6 +26,7 @@ type CartContextType = {
   openMiniCart: () => void;
   closeMiniCart: () => void;
 };
+
 const getLocalStorage = () => {
   if (typeof window !== 'undefined') {
     let cart = localStorage.getItem("cart");
