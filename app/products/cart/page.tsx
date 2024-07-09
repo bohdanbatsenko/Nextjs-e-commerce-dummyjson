@@ -1,5 +1,6 @@
 'use client';
 import { useCartContext } from '@/context/cart_context';
+import { useState, useEffect } from 'react';
 import Button from '@/components/Button';
 import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';

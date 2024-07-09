@@ -1,4 +1,4 @@
-import { getAllArticles, getArticle } from "@/lib/api";
+import { getAllArticles, getArticle } from "@/lib/api/apiArticles";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import Image from "next/image";
 import { notFound } from "next/navigation";
