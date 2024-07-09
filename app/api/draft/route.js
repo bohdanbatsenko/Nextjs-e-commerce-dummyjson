@@ -1,4 +1,4 @@
-import { getArticle } from "@/lib/api";
+import { getArticle } from "@/lib/api/apiArticles";
 import { draftMode } from "next/headers";
 import { redirect } from "next/navigation";
 
