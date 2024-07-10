@@ -23,6 +23,7 @@ async function fetchGraphQL(query) {
         Authorization: `Bearer ${process.env.CONTENTFUL_ACCESS_TOKEN}`,
       },
       body: JSON.stringify({ query }),
+      next: { tags: ["heroSlider"] },
     }
   ).then((response) => response.json());
 }
