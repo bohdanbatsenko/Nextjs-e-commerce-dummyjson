@@ -58,7 +58,7 @@ function extractArticleEntries(fetchResponse) {
 
 export async function getAllArticles(
   // For this demo set the default limit to always return 3 articles.
-  limit = 3,
+  limit = 6,
   // By default this function will return published content but will provide an option to
   // return draft content for reviewing articles before they are live
   isDraftMode = false

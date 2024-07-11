@@ -27,7 +27,7 @@ interface HeroSliderProps {
 const HeroSlider: React.FC<HeroSliderProps> = ({ data }) => {
   return (
     <section className="w-full">
-      <div className="h-screen">
+      <div className="h-screen md:h-full">
         <ul className="h-full w-full">
           <Swiper
             navigation
@@ -39,13 +39,13 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ data }) => {
             {data.map((slide, index) => (
               <SwiperSlide key={index} >
                 <div
-                  className="h-full w-full absolute left-0 top-0"
+                  className="h-full md:min-h-[480px] w-full absolute left-0 top-0"
                   style={{
                     background: `url(${slide.image.url}) center center / cover scroll no-repeat`,
                   }}
                 ></div>
                
-                <div className="relative z-10 h-full flex items-center justify-center">
+                <div className="relative z-10 h-full flex items-center justify-center md:min-h-[480px]">
                   <div className="text-center">
                     <p className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white">
                       {slide.title}

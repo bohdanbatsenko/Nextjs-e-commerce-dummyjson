@@ -14,15 +14,14 @@ export default async function HomePage() {
     <main className="flex min-h-screen flex-col items-center justify-between">
       <HeroSlider data={heroSlides} />
       <section className="w-full pt-12">
-        <div className="mx-auto container space-y-12 px-4 md:px-6">
+        <div className="mx-auto container space-y-12 px-4 md:px-24">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                Welcome to our Knowledge Base
+                Welcome to Next js store!
               </h1>
               <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
-                Discover our latest articles and stay up to date with the newest
-                technologies, features, and trends.
+                These blog articles come from Contentful CMS. User can create, delete, update.
               </p>
             </div>
           </div>
@@ -30,13 +29,13 @@ export default async function HomePage() {
             <div className="grid gap-4 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {articles.map((article) => (
                   <article key={article.sys.id} className="h-full flex flex-col rounded-lg shadow-lg overflow-hidden">
-                    <Image
+                    {article.articleImage?.url && <Image
                       alt="placeholder"
                       className="aspect-[4/3] object-cover w-full"
                       height="263"
                       src={article.articleImage.url}
                       width="350"
-                    />
+                    />}
                     <div className="flex-1 p-6">
                       <Link href={`/articles/${article.slug}`}>
                         <h3 className="text-2xl font-bold leading-tight text-black py-4">

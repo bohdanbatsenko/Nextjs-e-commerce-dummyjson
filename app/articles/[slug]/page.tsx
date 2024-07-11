@@ -12,7 +12,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function KnowledgeArticlePage({
+export default async function ArticlePage({
   params,
 }) {
   const { isEnabled } = draftMode();
