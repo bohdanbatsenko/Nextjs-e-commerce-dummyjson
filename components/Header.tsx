@@ -18,10 +18,6 @@ import { useCartContext } from '@/context/cart_context';
 import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
 
-const HeaderComponent = () => {
-  
-}
-
 const Header = () => {
   const { total_items, openMiniCart } = useCartContext();
 //const pathname = usePathname()

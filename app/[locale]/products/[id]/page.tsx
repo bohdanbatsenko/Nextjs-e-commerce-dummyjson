@@ -1,6 +1,5 @@
 'use client';
 
-import { Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Breadcrumb from '@/components/Breadcrumb';

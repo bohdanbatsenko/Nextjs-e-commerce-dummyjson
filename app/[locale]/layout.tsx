@@ -1,4 +1,5 @@
 import Header from '@/components/Header';
+import { Suspense } from 'react';
 import { ProductsProvider } from "@/context/products_context";
 import { FilterProvider } from "@/context/filter_context";
 import { CartProvider } from "@/context/cart_context";
@@ -28,7 +29,9 @@ export default function RootLayout({ children, params }: RootLayoutProps) {
     <FilterProvider>  
       <CartProvider>
         <ToastContainer />
+        <Suspense fallback={<div>Loading...</div>}>
           <Header />
+        </Suspense>
           {children}
         </CartProvider>
       </FilterProvider>
