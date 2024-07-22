@@ -1,6 +1,7 @@
 'use client';
 
 import './header.css'
+import { Suspense } from 'react';
 import MiniCart from '@/components/miniCart';
 import {   
   useRouter,
@@ -87,7 +88,7 @@ const Header = () => {
        <Link href="/">
           <h2 className='w-full text-xl lg:text-3xl font-bold text-amber-500'>{t("header.siteTitle")}</h2>
        </Link>
-      
+      <Suspense>
 
       {/* Desktop Navigation */}
       <nav className='nav'>
@@ -178,6 +179,7 @@ const Header = () => {
             <option value="en-US">🇺🇸 {t("languages.en")}</option>
             <option value="uk-UA">🇺🇦 {t("languages.uk")}</option>
         </select>
+      </Suspense>
       <MiniCart />
     </div>
   );
