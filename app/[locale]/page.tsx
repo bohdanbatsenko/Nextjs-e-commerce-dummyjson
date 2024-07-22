@@ -2,8 +2,10 @@ import { getAllArticles } from "@/lib/api/apiArticles";
 import { getAllHeroSlides } from "@/lib/api/apiHeroSlider";
 import { draftMode } from "next/headers";
 import HeroSlider from "./HeroSlider";
-import Articles from "./articles/Articles";
-import { Suspense } from "react";
+import Link from "next/link";
+import Image from "next/image";
+// import Articles from "./articles/Articles";
+// import { Suspense } from "react";
 // Internationalization
 import { createTranslation } from "@/app/i18n/server";
 import { LocaleTypes, locales } from "@/app/i18n/settings";
@@ -29,10 +31,10 @@ export default async function HomePage({params}) {
               </p>
             </div>
           </div>
-          <Suspense fallback={<div>Loading...</div>}>
+          {/* <Suspense fallback={<div>Loading...</div>}>
             <Articles articles={articles} locale={params.locale} />
-          </Suspense>
-          {/* <div className="space-y-12">
+          </Suspense> */}
+          <div className="space-y-12">
             <div className="grid gap-4 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {articles && articles.map((article) => (
                   <article key={article.sys.id} className="h-full flex flex-col rounded-lg shadow-lg overflow-hidden">
@@ -70,7 +72,7 @@ export default async function HomePage({params}) {
                   </article>
               ))}
             </div>
-          </div> */}
+          </div>
         </div>
       </section>
     </main>
