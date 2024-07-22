@@ -1,12 +1,19 @@
 'use client';
 
+import { useParams } from 'next/navigation'
 import  { useState } from "react";
 import Button from "./Button";
 import AmountButtons from "./AmountButtons";
 import { toasterNotifier } from '@/hooks/useToasterNotify';
 import { useCartContext } from "@/context/cart_context";
+// Internationalization
+import { useTranslation } from "@/app/i18n/client";
+import type { LocaleTypes } from "@/app/i18n/settings";
 
 const AddToCart = ({ product }) => {
+  const locale = useParams()?.locale as LocaleTypes;
+  const { t } = useTranslation(locale, "common");
+  
   const { addToCart, openMiniCart } = useCartContext();
   const { notifyAddedToCart } = toasterNotifier()
   const [amount, setAmount] = useState(1);
@@ -38,7 +45,7 @@ const AddToCart = ({ product }) => {
         onClick={() => 
           handleAddToCart(product, amount)
         }>
-        Add to cart
+        {t("shop.addToCart")}
       </Button>
     </>
   );

@@ -32,10 +32,10 @@ function extractHeroSlidesEntries(fetchResponse) {
   return fetchResponse?.data?.heroSliderCollection?.items;
 }
 
-export async function getAllHeroSlides() {
+export async function getAllHeroSlides(locale) {
   const slides = await fetchGraphQL(
     `query {
-      heroSliderCollection {
+      heroSliderCollection(locale: "${locale}",) {
           items {
             ${HERO_SLIDES}
           }

@@ -1,8 +1,15 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useParams } from 'next/navigation'
+// Internationalization
+import { useTranslation } from "@/app/i18n/client";
+import type { LocaleTypes } from "@/app/i18n/settings";
 
 const ListProducts = ({ products }) => {
+  const locale = useParams()?.locale as LocaleTypes;
+  const { t } = useTranslation(locale, "common");
+
   return (
     <div className="grid grid-cols-1 gap-1.2 p-1 md:mb-1.5">
     {products.map(({ title, thumbnail, id, price, description }) => (
@@ -21,7 +28,7 @@ const ListProducts = ({ products }) => {
             }}
             className="mt-2 lg:mt-0 px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
           >
-          View
+          {t("shop.viewProduct")}
         </Link>
         </div>
       </article>

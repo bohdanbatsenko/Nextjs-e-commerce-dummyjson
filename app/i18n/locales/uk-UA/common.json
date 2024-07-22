@@ -1,0 +1,80 @@
+{
+  "header": {
+    "siteTitle": "Next Магазин",
+    "mainNav": {
+      "home": "Головна",
+      "shop": "Магазин",
+      "articles": "Новини"
+    },
+    "miniCart": {
+      "shoppingCart": "Кошик",
+      "closeDrawer": "Закрити панель",
+      "noItemsMsg": "Кошик порожній. Може щось купимо?",
+      "subTotal": "Разом",
+      "miniCartMsg": "Вартість доставки і податки вираховуються на чекауті.",
+      "goToCart": "Перейти до кошика",
+      "or": "або",
+      "continueShopping": "Продовжити покупки"
+    }
+  },
+  "languages": {
+    "en": "EN",
+    "uk": "UA"
+  },
+  "homePage": {
+    "welcomeTitle": "Ласкаво просимо до магазину Next!",
+    "welcomeDescr": "Статті із блогу створені за допомогою Contentful CMS. Користувач може створювати, видаляти, редагувати їх вміст."
+  },
+  "blog": {
+    "readMore": "Читати статтю",
+    "writtenBy": "Автор"
+  },
+  "shop": {
+    "shop": "Магазин",
+    "viewProduct": "Дивитись",
+    "addToCart": "Додати до кошика",
+    "sortItemsFound": "позицій знайдено",
+    "sortBy": "Сортувати за",
+    "sortPrice": "ціною",
+    "sortLowest": "від дешевших",
+    "sortHighest": "від дорожчих",
+    "sortName": "ім'ям",
+    "sortAZ": "a - я",
+    "sortZA": "я - a",
+    "search": "Пошук",
+    "categories": "Категорії",
+    "price": "Ціна",
+    "resetFilters": "Скасувати",
+    "searchProducts": "Шукати товари",
+    "smthWentWrong": "Ото халепа! Щось не те коїться...",
+    "cart": {
+      "cart": "Кошик",
+      "totalItems": "Усього товарів",
+      "totalPrice": "Товарів на суму",
+      "checkout": "Оформлення замовлення",
+      "msgEmptyCart": "Ваш кошик порожній",
+      "shopNow": "Перейти до товарів",
+      "buyMore": "Продовжити покупки",
+      "clearCart": "Очистити кошик"
+    },
+    "productDetails": {
+      "discount": "Знижка",
+      "taxIncluded": "Податок включено",
+      "category": "Категорія",
+      "stock": "На складі",
+      "brand": "Бренд",
+      "about": "Про товар",
+      "warrantyInfo": "Гарантія",
+      "shippingInfo": "Доставка",
+      "availability": "Наявність",
+      "return": "Повернення",
+      "minimumQty": "Мінімальна кількість замовлення",
+      "reviews": "Відгуки",
+      "readAllReviews": "Читати усі відгуки"
+    }
+  },
+  "breadcrumbs": {
+    "home": "Головна",
+    "products": "Продукти"
+  }
+}

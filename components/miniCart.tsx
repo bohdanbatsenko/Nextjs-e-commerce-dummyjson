@@ -1,22 +1,24 @@
 'use client'
 
+import { useParams } from 'next/navigation'
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FaRegTimesCircle } from "react-icons/fa";
 import { useCartContext } from '@/context/cart_context';
 import MiniCartItem from './MiniCartItem';
+// Internationalization
+import { useTranslation } from "@/app/i18n/client";
+import type { LocaleTypes } from "@/app/i18n/settings";
 
 const MiniCart = () => {
+  const locale = useParams()?.locale as LocaleTypes;
+  const { t } = useTranslation(locale, "common");
   const [ isClient, setIsClient ] = useState(false)
   const { cart, total_items, total_price, isMiniCartOpen, closeMiniCart } = useCartContext();
   
   useEffect(() => {
     setIsClient(true)
   }, [])
-
-  // if (!cart || cart.length < 1) {
-  //   return (<div>No items</div>);
-  // }
 
   return (
     <div className={
@@ -35,7 +37,7 @@ const MiniCart = () => {
         <article className="relative md:w-screen md:max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full text-black">
           <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
             <header className="flex items-start justify-between">
-              <h2 className="text-lg font-medium text-gray-900">Shopping cart</h2>
+              <h2 className="text-lg font-medium text-gray-900">{t("header.miniCart.shoppingCart")}</h2>
               <div className="ml-3 flex h-7 items-center">
                 <button
                   type="button"
@@ -43,7 +45,7 @@ const MiniCart = () => {
                   onClick={closeMiniCart}
                 >
                   <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Close panel</span>
+                  <span className="sr-only">{t("header.miniCart.closeDrawer")}</span>
                   <FaRegTimesCircle className="h-6 w-6"/>
                 </button>
               </div>
@@ -53,35 +55,35 @@ const MiniCart = () => {
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
                   {isClient && cart && cart.length ? cart.map((product) => (
                       <MiniCartItem key={product.id} product={product}/>
-                  )) : (<div>No items in cart. Let's buy something!</div>)}
+                  )) : (<div>{t("header.miniCart.noItemsMsg")}</div>)}
                 </ul>
               </div>
             </div>
           </div>
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between text-base font-medium text-gray-900">
-              <p>Subtotal</p>
+              <p>{t("header.miniCart.subTotal")}</p>
               <p>${total_price}</p>
             </div>
-            <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+            <p className="mt-0.5 text-sm text-gray-500">{t("header.miniCart.miniCartMsg")}</p>
             <div className="mt-6">
             <Link 
               className="flex items-center justify-center rounded-md border border-transparent bg-gray-800 px-6 py-3 text-base font-medium text-white hover:bg-gray-500" 
               href="/products/cart"
               onClick={closeMiniCart}
             >
-              Go to cart
+              {t("header.miniCart.goToCart")}
             </Link>
             </div>
             <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
               <p>
-                or{' '}
+              {t("header.miniCart.or")}{' '}
                 <Link
                   href="/products"
                   className="font-medium text-gray-600 hover:text-gray-500"
                   onClick={closeMiniCart}
                 >
-                  Continue Shopping
+                  {t("header.miniCart.continueShopping")}
                   <span aria-hidden="true"> &rarr;</span>
                 </Link>
               </p>

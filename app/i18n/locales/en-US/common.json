@@ -1,0 +1,81 @@
+{
+  "header": {
+    "siteTitle": "Next Shop",
+    "mainNav": {
+      "home": "Home",
+      "shop": "Shop",
+      "articles": "Articles"
+    },
+    "miniCart": {
+      "shoppingCart": "Shopping Cart",
+      "closeDrawer": "Close Drawer",
+      "noItemsMsg": "No items in cart. Let's buy something!",
+      "subTotal": "Subtotal",
+      "miniCartMsg": "Shipping and taxes calculated at checkout.",
+      "goToCart": "Go to cart",
+      "or": "or",
+      "continueShopping": "Continue Shopping"
+    }
+  },
+  "languages": {
+    "en": "EN",
+    "uk": "UA"
+  },
+  "homePage": {
+    "welcomeTitle": "Welcome to Next js store!",
+    "welcomeDescr": "These blog articles come from Contentful CMS. User can create, delete, update."
+  },
+  "blog": {
+    "readMore": "Read more",
+    "writtenBy": "Written by"
+  },
+  "shop": {
+    "shop": "Shop",
+    "viewProduct": "View",
+    "addToCart": "Add to cart",
+    "sortItemsFound": "items found",
+    "sortBy": "Sort by",
+    "sortPrice": "Price",
+    "sortLowest": "lowest",
+    "sortHighest": "highest",
+    "sortName": "name",
+    "sortAZ": "a - z",
+    "sortZA": "z - a",
+    "search": "Search",
+    "categories": "Categories",
+    "price": "Price",
+    "resetFilters": "Reset filters",
+    "searchProducts": "Search products",
+    "smthWentWrong": "Oops, something went wrong...",
+    "cart": {
+      "cart": "Cart",
+      "totalItems": "Total items",
+      "totalPrice": "Total price",
+      "checkout": "Checkout",
+      "msgEmptyCart": "Your cart is empty",
+      "shopNow": "Shop now",
+      "buyMore": "Buy more",
+      "clearCart": "Clear cart"
+    },
+    "productDetails": {
+      "discount": "Discount",
+      "taxIncluded": "Tax included",
+      "category": "Category",
+      "stock": "Stock",
+      "brand": "Brand",
+      "about": "About",
+      "warrantyInfo": "Warranty information",
+      "shippingInfo": "Shipping information",
+      "availability": "Availability",
+      "return": "Return policy",
+      "minimumQty": "Minimum order quantity",
+      "reviews": "Reviews",
+      "readAllReviews": "Read all reviews"
+    }
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "products": "Products",
+    "articles": "Articles"
+  }
+}

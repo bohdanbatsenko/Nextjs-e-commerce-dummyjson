@@ -1,16 +1,21 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Breadcrumb from '@/components/Breadcrumb';
 import AddToCart from '@/components/AddToCart';
 import Stars from '@/components/Stars';
 import { useEffect, useState, useContext } from 'react';
-import { useSearchParams } from "next/navigation";
 import { useProductsContext } from "@/context/products_context";
+// Internationalization
+import { useTranslation } from "@/app/i18n/client";
+import type { LocaleTypes } from "@/app/i18n/settings";
+import { useSearchParams  } from 'next/navigation';
 
 const Product = () => {
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id')
+  const locale = useParams()?.locale as LocaleTypes;
+  const { t } = useTranslation(locale, "common");
+
   const [selectedImage, setSelectedImage] = useState("");
 
   const {
@@ -20,13 +25,19 @@ const Product = () => {
     fetchSingleProduct,
   } = useProductsContext();
 
+  // const router = useRouter();
+  // const pathname = usePathname()
+  const searchParams = useSearchParams()
+  //const params = useParams();
+  const id = searchParams.get('id');
   if (!product) {
     return <div>Loading...</div>;
   }
 
   useEffect(() => {
+    //console.log(`Fetching product with id: ${id} and locale: ${locale}`);
     fetchSingleProduct(id);
-  }, [id]);
+  }, [id, locale]);
 
   useEffect(() => {
     if (product && product.thumbnail) {
@@ -70,8 +81,8 @@ const Product = () => {
               {selectedImage && 
               <Image
                 src={selectedImage} 
-                width={300} 
-                height={280} 
+                width={300}
+                height={280}
                 alt="Product" 
                 className="" 
               />}
@@ -99,30 +110,30 @@ const Product = () => {
                 <p className="text-gray-800 text-xl font-bold">${product.price}</p>
                 <p className="text-gray-400 text-xl">
                 <span style={{ textDecoration: 'line-through' }}>${product.price}</span>
-                  <span className="text-sm ml-1">Tax included</span>
+                  <span className="text-sm ml-1">{t("shop.productDetails.taxIncluded")}</span>
                 </p>
-                <p className="text-black text-xl">{product.discountPercentage}%<span className="text-sm ml-1">Discount</span></p>
+                <p className="text-black text-xl">{product.discountPercentage}%
+                  <span className="text-sm ml-1">{t("shop.productDetails.discount")}</span>
+                  </p>
               </div>
-
               <div className="flex gap-4 space-x-2 mt-4">
                 <div className="">
                   <span className="text-sm">SKU:</span>
                   <h3 className="text-sm font-bold text-gray-800 capitalize">{product.sku}</h3>
                 </div>
                 <div className="">
-                  <span className="text-sm">Category:</span>
+                  <span className="text-sm">{t("shop.productDetails.category")}:</span>
                   <h3 className="text-sm font-bold text-gray-800 capitalize">{product.category}</h3>
                 </div>
                 <div className="">
-                  <span className="text-sm">Stock:</span>
+                  <span className="text-sm">{t("shop.productDetails.stock")}:</span>
                   <h3 className="text-sm font-bold text-gray-800 capitalize">{product.stock}</h3>
                 </div>
                 <div className="">
-                  <span className="text-sm">Brand:</span>
+                  <span className="text-sm">{t("shop.productDetails.brand")}:</span>
                   <h3 className="text-sm font-bold text-gray-800 capitalize">{product.brand}</h3>
                 </div>
               </div>
-
               <div className="flex space-x-2 mt-4">
               <Stars stars={product.rating} />
               </div>
@@ -132,7 +143,7 @@ const Product = () => {
           </div>
 
           <div className="mt-8">
-            <h3 className="text-lg font-bold text-gray-800">About {product.title}</h3>
+            <h3 className="text-lg font-bold text-gray-800">{t("shop.productDetails.about")} {product.title}</h3>
             <ul className="space-y-3 list-disc mt-4 pl-4 text-sm text-gray-800">
               <li>{product.description}</li>
             </ul>
@@ -140,33 +151,32 @@ const Product = () => {
 
           <div className="flex gap-4 space-x-2 mt-4">
             <div>
-              <span className="text-sm">Warranty information:</span>
+              <span className="text-sm">{t("shop.productDetails.warrantyInfo")}:</span>
               <h3 className="text-sm font-bold text-gray-800 capitalize">{product.warrantyInformation}</h3>
             </div>
             <div>
-              <span className="text-sm">Shipping information:</span>
+              <span className="text-sm">{t("shop.productDetails.shippingInfo")}:</span>
               <h3 className="text-sm font-bold text-gray-800 capitalize">{product.shippingInformation}</h3>
             </div>
             <div>
-              <span className="text-sm">Availability:</span>
+              <span className="text-sm">{t("shop.productDetails.availability")}:</span>
               <h3 className="text-sm font-bold text-gray-800 capitalize">{product.availabilityStatus}</h3>
             </div>
           </div>
 
           <div className="flex gap-4 space-x-2 mt-4">
             <div>
-              <span className="text-sm">Return policy:</span>
+              <span className="text-sm">{t("shop.productDetails.return")}:</span>
               <h3 className="text-sm font-bold text-gray-800 capitalize">{product.returnPolicy}</h3>
             </div>
             <div>
-              <span className="text-sm">Minimum order quantity:</span>
+              <span className="text-sm">{t("shop.productDetails.minimumQty")}:</span>
               <h3 className="text-sm font-bold text-gray-800 capitalize">{product.minimumOrderQuantity}</h3>
             </div>
-
           </div>
 
           <div className="mt-8 max-w-md">
-            <h3 className="text-lg font-bold text-gray-800">Reviews(10)</h3>
+            <h3 className="text-lg font-bold text-gray-800">{t("shop.productDetails.reviews")}(10)</h3>
             <div className="space-y-3 mt-4">
               <div className="flex items-center">
                 <p className="text-sm text-gray-800 font-bold">5.0</p>
@@ -283,7 +293,11 @@ const Product = () => {
                 <p className="text-xs mt-4">The service was amazing. I never had to wait that long for my food. The staff was friendly and attentive, and the delivery was impressively prompt.</p>
               </div>
             </div>
-            <button type="button" className="w-full mt-8 px-4 py-2 bg-transparent border-2 border-gray-800 text-gray-800 font-bold rounded">Read all reviews</button>
+            <button 
+            type="button" 
+            className="w-full mt-8 px-4 py-2 bg-transparent border-2 border-gray-800 text-gray-800 font-bold rounded">
+              {t("shop.productDetails.readAllReviews")}
+              </button>
           </div>
           </div>
         </div>
