@@ -13,7 +13,7 @@ import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
 import { useSearchParams  } from 'next/navigation';
 
-const Product = () => {
+function Product() {
   const locale = useParams()?.locale as LocaleTypes;
   const { t } = useTranslation(locale, "common");
 
@@ -76,7 +76,6 @@ const Product = () => {
       <div className='px-10 lg:px-20 py-5'>
       <Breadcrumb products title={product.title} />
         <article>
-          <Suspense>
           <div className="p-6 lg:max-w-7xl max-w-2xl max-lg:mx-auto">
           <div className="grid items-start grid-cols-1 lg:grid-cols-5 gap-12">
             <div className="lg:col-span-3 flex flex-col justify-center items-center bg-gray-100 lg:sticky top-0 text-center center p-4">
@@ -304,7 +303,6 @@ const Product = () => {
           </div>
         </div>
         </div>
-        </Suspense>
       </article>
       </div>
     </main>

@@ -1,7 +1,6 @@
 'use client';
 
 import './header.css'
-import { Suspense } from 'react';
 import MiniCart from '@/components/miniCart';
 import {   
   useRouter,
@@ -18,6 +17,10 @@ import { useCartContext } from '@/context/cart_context';
 // Internationalization
 import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
+
+const HeaderComponent = () => {
+  
+}
 
 const Header = () => {
   const { total_items, openMiniCart } = useCartContext();
@@ -88,7 +91,6 @@ const Header = () => {
        <Link href="/">
           <h2 className='w-full text-xl lg:text-3xl font-bold text-amber-500'>{t("header.siteTitle")}</h2>
        </Link>
-      <Suspense>
 
       {/* Desktop Navigation */}
       <nav className='nav'>
@@ -179,7 +181,6 @@ const Header = () => {
             <option value="en-US">🇺🇸 {t("languages.en")}</option>
             <option value="uk-UA">🇺🇦 {t("languages.uk")}</option>
         </select>
-      </Suspense>
       <MiniCart />
     </div>
   );

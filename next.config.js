@@ -13,5 +13,8 @@ module.exports = {
         port: '',
       },
     ],
-  }
+  },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 }
