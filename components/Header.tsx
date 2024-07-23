@@ -83,7 +83,7 @@ const Header = () => {
   };
 
   return (
-    <div className='bg-black flex justify-between items-center h-24 mx-auto px-4 text-white'>
+    <div className='bg-gray-900 flex justify-between items-center h-24 mx-auto px-4 text-white'>
        <Link href="/">
           <h2 className='w-full text-xl lg:text-3xl font-bold text-amber-500'>{t("header.siteTitle")}</h2>
        </Link>
@@ -134,7 +134,7 @@ const Header = () => {
           }
         >
           {/* Mobile Logo */}
-          <h2 className='w-full text-3xl font-bold text-[#00df9a] m-4'>{t("header.siteTitle")}</h2>
+          <h2 className='w-full text-3xl font-bold text-amber-500 m-4'>{t("header.siteTitle")}</h2>
 
           {/* Mobile Navigation Items */}
             <li

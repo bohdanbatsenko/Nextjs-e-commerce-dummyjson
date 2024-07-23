@@ -1,4 +1,5 @@
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Suspense } from 'react';
 import { ProductsProvider } from "@/context/products_context";
 import { FilterProvider } from "@/context/filter_context";
@@ -33,6 +34,7 @@ export default function RootLayout({ children, params }: RootLayoutProps) {
           <Header />
         </Suspense>
           {children}
+          <Footer />
         </CartProvider>
       </FilterProvider>
     </ProductsProvider>
