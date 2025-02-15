@@ -28,7 +28,7 @@ export const products_reducer = (state, action) => {
 
   if (type === GET_PRODUCTS_SUCCESS) {
     const popular_products = payload.filter(
-      (product) => product.rating.rate >= 4.5
+      (product) => product.rating_summary >= 60
     );
     return {
       ...state,

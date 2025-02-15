@@ -44,7 +44,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ data }) => {
             loop={true}
             modules={[Autoplay, Navigation, Pagination]}
           >
-            {data.map((slide, index) => (
+            {/* {data.map((slide, index) => (
               <SwiperSlide key={index} >
                 <div
                   className="h-[60vh] md:min-h-[50vh] w-full absolute left-0 top-0"
@@ -64,7 +64,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ data }) => {
                   </div>
                 </div>
               </SwiperSlide>
-            ))}
+            ))} */}
           </Swiper>
         </ul>
       </div>

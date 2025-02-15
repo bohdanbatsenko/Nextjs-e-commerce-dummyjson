@@ -7,6 +7,10 @@ import { CartProvider } from "@/context/cart_context";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { locales } from "@/app/i18n/settings";
+//import { ApolloProvider } from "@apollo/client";
+//import { useApollo } from "@/lib/apolloClient";
+import { ApolloWrapper } from "@/lib/apolloClient";
+
 
 export async function generateStaticParams() {
   return locales.map((lng) => ({ lng }));
@@ -24,19 +28,22 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children, params }: RootLayoutProps) {
   const locale = params.locale;
+  //const apolloClient = useApollo();
 
   return (
-  <ProductsProvider>
-    <FilterProvider>  
-      <CartProvider>
-        <ToastContainer />
-        <Suspense fallback={<div>Loading...</div>}>
-          <Header />
-        </Suspense>
-          {children}
-          <Footer />
-        </CartProvider>
-      </FilterProvider>
-    </ProductsProvider>
+    <ApolloWrapper>
+      <ProductsProvider>
+        <FilterProvider>  
+          <CartProvider>
+            <ToastContainer />
+            <Suspense fallback={<div>Loading...</div>}>
+              <Header />
+            </Suspense>
+              {children}
+            <Footer />
+          </CartProvider>
+         </FilterProvider>
+      </ProductsProvider>
+      </ApolloWrapper>
   )
 }

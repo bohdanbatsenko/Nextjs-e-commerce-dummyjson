@@ -42,52 +42,146 @@ const initialState = {
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
-const API_ENDPOINT = "https://dummyjson.com/products?limit=400";
+//const API_ENDPOINT = "https://dummyjson.com/products?limit=400";
+const API_ENDPOINT = "https://m2.test/graphql/";
+
+const GET_PRODUCTS_QUERY = `
+query getProductsQuery {
+    products(search: "", pageSize: 450) {
+      items {
+        __typename
+        id
+        name
+        categories {
+          id
+          name
+          url_key
+        }
+        description {
+          html
+        }
+        sku
+        price_range {
+          minimum_price {
+            final_price {
+              value
+            }
+          }
+        }
+        image {
+          url
+        }
+        small_image {
+          url
+        }
+        rating_summary
+      }
+    }
+  }
+`;
+
+const GET_SINGLE_PRODUCT_QUERY = (id) => `
+query {
+product(id: "${id}") {
+  id
+  name
+  description {
+    html
+  }
+  sku
+  price {
+    regularPrice {
+      amount {
+        value
+        currency
+      }
+    }
+  }
+  image {
+    url
+  }
+}
+}
+`;
+
+// const transformMagentoProduct = (magentoProduct) => ({
+//   id: magentoProduct.id,
+//   title: magentoProduct.name,
+//   description: magentoProduct.description.html,
+//   price: magentoProduct.price.regularPrice.amount.value,
+//   image: magentoProduct.image.url,
+
+// });
 
 export const ProductsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const fetchProducts = async (url) => {
+  const fetchProducts = async () => {
     dispatch({ type: GET_PRODUCTS_BEGIN });
     try {
-      const response = await fetch(url);
+      const response = await fetch('https://m2.test/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include authentication headers if needed
+        },
+        body: JSON.stringify({ query: GET_PRODUCTS_QUERY }),
+      });
       const data = await response.json();
-      const products = data.products;
+      // console.log('Data', data)
+      const products = data.data.products.items;
       dispatch({ type: GET_PRODUCTS_SUCCESS, payload: products });
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR });
     }
   };
 
-  const fetchSingleProduct = async (params) => {
+  const fetchSingleProduct = async (id) => {
     dispatch({ type: GET_SINGLE_PRODUCT_BEGIN });
     try {
-      const response = await fetch(`https://dummyjson.com/products/${params}`);
-      const singleProduct = await response.json();
+      const response = await fetch('https://m2.test/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include authentication headers if needed
+        },
+        body: JSON.stringify({ query: GET_SINGLE_PRODUCT_QUERY(id) }),
+      });
+      const data = await response.json();
+      const singleProduct = data.data.product;
       dispatch({ type: GET_SINGLE_PRODUCT_SUCCESS, payload: singleProduct });
     } catch (error) {
       dispatch({ type: GET_SINGLE_PRODUCT_ERROR });
     }
   };
+  // const fetchProducts = async (url) => {
+  //   dispatch({ type: GET_PRODUCTS_BEGIN });
+  //   try {
+  //     const response = await fetch(url);
+  //     const data = await response.json();
+  //     const products = data.products;
+  //     dispatch({ type: GET_PRODUCTS_SUCCESS, payload: products });
+  //   } catch (error) {
+  //     dispatch({ type: GET_PRODUCTS_ERROR });
+  //   }
+  // };
+
+  // const fetchSingleProduct = async (params) => {
+  //   dispatch({ type: GET_SINGLE_PRODUCT_BEGIN });
+  //   try {
+  //     const response = await fetch(`https://dummyjson.com/products/${params}`);
+  //     const singleProduct = await response.json();
+  //     dispatch({ type: GET_SINGLE_PRODUCT_SUCCESS, payload: singleProduct });
+  //   } catch (error) {
+  //     dispatch({ type: GET_SINGLE_PRODUCT_ERROR });
+  //   }
+  // };
 
   useEffect(() => {
-    fetchProducts(API_ENDPOINT);
+    fetchProducts();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     try {
-  //       const response = await fetch('api/products/products');
-  //       const data = await response.json();
-  //       setProducts(data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setError(error.message);
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchProducts();
-  // }, []);
+
 
   const openSidebar = () => {
     dispatch({ type: OPEN_SIDEBAR });
