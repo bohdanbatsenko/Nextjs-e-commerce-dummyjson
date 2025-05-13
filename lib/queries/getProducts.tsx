@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { MEDIA_GALLERY_FRAGMENT } from './mediaGalleryFragment';
 
 export const GET_PRODUCTS = gql`
   query getProductsQuery {
@@ -34,12 +35,10 @@ export const GET_PRODUCTS = gql`
             label
             url
           }
-          media_gallery {
-            url
-            label
-          }
+          ...MediaGallery
           rating_summary
         }
       }
     }
+    ${MEDIA_GALLERY_FRAGMENT}
 `;

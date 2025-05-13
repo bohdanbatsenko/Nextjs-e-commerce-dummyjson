@@ -30,6 +30,8 @@ export interface MediaGalleryItem {
   url?: string;
   label?: string;
   position?: number;
+  type?: string;
+  __typename?: string;
 }
 
 export interface Product {
@@ -46,7 +48,9 @@ export interface Product {
     name?: string;
     url_key?: string;
   }[];
-  small_image?: string;
+  small_image?:{
+    url?: string;
+  },
   image?:{
     url?: string;
   }[];
@@ -74,7 +78,8 @@ export interface Product {
   rating_summary?: number;
 }
 
-
+export type SelectedConfigurableProductOptions = { [key: string]: number };
+export type HandleSelectConfigurableOption = (optionCode: string, valueIndex: number) => void;
   // discountPercentage?: number;
   // rating?: number;
   // stock?: number;

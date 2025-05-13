@@ -3,19 +3,27 @@
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Product } from '@/types/product';
+import type { Product } from '@/types/product';
 // Internationalization
 import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
 
-const ProductCart = ({product}: {product: Product}) => {
+const ProductCard = ({product}: {product: Product}) => {
   const locale = useParams()?.locale as LocaleTypes;
   const { t } = useTranslation(locale, "common");
-  //console.log(product.image.url);
 
   return (
     <div key={product.id} className='bg-white shadow-md rounded-lg px-2 py-2 md:px-5 md:py-5 flex flex-col justify-between'>
-      <Image src={product.thumbnail?.url} width={300} height={200} alt={product.name} className='rounded-md h-14 object-cover md:h-48 sm:object-scale-down' />
+      {product && product.small_image?.url ? (
+      <img
+        src={product.small_image.url} 
+        width={300} 
+        height={200} 
+        alt={product.name || 'Product name'} 
+        className='rounded-md h-14 object-cover md:h-48 sm:object-scale-down' />
+      ) : (
+        <div>No image available</div>
+      )}
       <div className='mt-2 md:mt-4'>
         <h1 className='text-sm md:text-lg uppercase font-bold'>
           {product.name}
@@ -40,4 +48,4 @@ const ProductCart = ({product}: {product: Product}) => {
   )
 };
 
-export default ProductCart;
+export default ProductCard;

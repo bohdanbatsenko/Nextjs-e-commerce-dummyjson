@@ -43,7 +43,7 @@ const initialState = {
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
 //const API_ENDPOINT = "https://dummyjson.com/products?limit=400";
-const API_ENDPOINT = "https://m2.test/graphql/";
+const API_ENDPOINT = "https://magento.test/graphql/";
 
 const GET_PRODUCTS_QUERY = `
 query getProductsQuery {
@@ -119,7 +119,7 @@ export const ProductsProvider = ({ children }) => {
   const fetchProducts = async () => {
     dispatch({ type: GET_PRODUCTS_BEGIN });
     try {
-      const response = await fetch('https://m2.test/graphql', {
+      const response = await fetch('https://magento.test/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ export const ProductsProvider = ({ children }) => {
   const fetchSingleProduct = async (id) => {
     dispatch({ type: GET_SINGLE_PRODUCT_BEGIN });
     try {
-      const response = await fetch('https://m2.test/graphql', {
+      const response = await fetch('https://magento.test/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

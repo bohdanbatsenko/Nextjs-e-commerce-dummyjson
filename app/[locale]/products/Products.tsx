@@ -6,7 +6,7 @@ import './page.module.css'
 //import { useFilterContext } from '@/context/filter_context';
 //import Pagination from '@/components/Pagination';
 //import ListProducts from './ListProducts';
-import { Product } from '@/types/product';
+import type { Product } from '@/types/product';
 import GridProducts from './GridProducts';
 import { Suspense, useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';

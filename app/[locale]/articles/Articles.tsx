@@ -4,6 +4,8 @@ import Link from "next/link";
 import { createTranslation } from "@/app/i18n/server";
 import type { LocaleTypes } from "@/app/i18n/settings";
 
+import type { JSX } from "react";
+
 const Articles = async ({articles, locale}: {
   articles: any;
   locale: string;

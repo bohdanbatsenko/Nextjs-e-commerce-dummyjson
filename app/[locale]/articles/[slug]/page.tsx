@@ -162,15 +162,14 @@ export async function generateStaticParams({params}) {
   }));
 }
 
-export default async function KnowledgeArticlePage({
-  params,
-}) {
+export default async function KnowledgeArticlePage(props) {
+  const params = await props.params;
   const article = await getArticle(params.slug, params.locale, false);
 
   if (!article) {
     notFound();
   }
-  
+
   const { t } = await createTranslation(article.locale as LocaleTypes, "common");
 
   return (

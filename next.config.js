@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   images: {
-    domains: ['m2.test'],
+    domains: ['magento.test'],
     formats: ['image/webp'],
     remotePatterns: [
       {
@@ -21,9 +21,9 @@ module.exports = {
       },
       {
         protocol: 'https',
-        hostname: 'm2.test',
+        hostname: 'magento.test/',
         port: '',
-        pathname: '',
+        pathname: '/.*/**',
       },
     ],
   }

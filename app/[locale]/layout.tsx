@@ -1,15 +1,19 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Suspense } from 'react';
-import { ProductsProvider } from "@/context/products_context";
-import { FilterProvider } from "@/context/filter_context";
-import { CartProvider } from "@/context/cart_context";
+// import { ProductsProvider } from "@/context/products_context";
+// import { FilterProvider } from "@/context/filter_context";
+// import { CartProvider } from "@/context/cart_context";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { locales } from "@/app/i18n/settings";
 //import { ApolloProvider } from "@apollo/client";
 //import { useApollo } from "@/lib/apolloClient";
 import { ApolloWrapper } from "@/lib/apolloClient";
+
+//import { store } from '@/redux/store';
+//import { Provider } from 'react-redux';
+import StoreProvider from '@/redux/StoreProvider';
 
 
 export async function generateStaticParams() {
@@ -23,16 +27,31 @@ export const metadata = {
 
 type RootLayoutProps = {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export default function RootLayout({ children, params }: RootLayoutProps) {
+export default async function RootLayout(props: RootLayoutProps) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const locale = params.locale;
   //const apolloClient = useApollo();
 
   return (
-    <ApolloWrapper>
-      <ProductsProvider>
+    <StoreProvider>
+      <ApolloWrapper>
+     
+        <ToastContainer />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Header />
+        </Suspense>
+          {children}
+        <Footer />
+     
+      {/* <ProductsProvider>
         <FilterProvider>  
           <CartProvider>
             <ToastContainer />
@@ -43,7 +62,8 @@ export default function RootLayout({ children, params }: RootLayoutProps) {
             <Footer />
           </CartProvider>
          </FilterProvider>
-      </ProductsProvider>
+      </ProductsProvider> */}
       </ApolloWrapper>
+    </StoreProvider>
   )
 }

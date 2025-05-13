@@ -13,13 +13,20 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { FaShoppingCart } from "react-icons/fa";
-import { useCartContext } from '@/context/cart_context';
+
+//import { useCartContext } from '@/context/cart_context';
 // Internationalization
 import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
+import { useCart } from '@/hooks/useCart';
 
 const Header = () => {
-  const { total_items, openMiniCart } = useCartContext();
+  const { 
+    cartId,     
+    openMiniCart,
+    closeMiniCart,
+    isMiniCartOpen } = useCart();
+  //const { total_items, openMiniCart } = useCartContext();
 //const pathname = usePathname()
   const [nav, setNav] = useState<boolean>(false);
   const locale = useParams()?.locale as LocaleTypes;
@@ -39,6 +46,7 @@ const Header = () => {
   // console.log("urlSegments", urlSegments)
   // console.log("pathname", pathname)
 
+
   async function handleLocaleChange(event: any) {
     const newLocale = event;
     //console.log("newLocale", newLocale)
@@ -48,6 +56,7 @@ const Header = () => {
     //const queryString = new URLSearchParams(query);
     let id = searchParams.get('id');
     const newPath = `/${newLocale}/${urlSegments.join("/")}`;
+
     console.log("id", id)
     console.log("query", query)
     //console.log("queryString", queryString)
@@ -94,15 +103,15 @@ const Header = () => {
           <Link className={`nav-link ${pathname === '/' ? 'active' : ''}`} href="/">{t("header.mainNav.home")}</Link>
           <Link className={`nav-link ${pathname === '/products' ? 'active' : ''}`} href="/products">{t("header.mainNav.shop")}</Link>
           <Link className={`nav-link ${pathname === '/articles' ? 'active' : ''}`} href="/articles">{t("header.mainNav.articles")}</Link>
-          <Link className='nav-link shop-cart relative' href="#" onClick={openMiniCart}>
+          <Link className='nav-link shop-cart relative' href="#" onClick={(e) => { e.preventDefault(); openMiniCart(); }}>
             <FaShoppingCart/>
-            {total_items > 0 
+            {/* {total_items > 0 
               ? <span className="absolute inset-0 object-right-top ml-8 -mt-3">
               <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-semibold leading-4 bg-amber-500 text-black">
                 {total_items}
               </div>
             </span>
-            : ''}
+            : ''} */}
           </Link>
           <select
             onChange={(e) => handleLocaleChange(e.target.value)}
@@ -160,15 +169,15 @@ const Header = () => {
           }}
         ></section>
       </div>
-      <Link className='md:hidden mr-4 nav-link shop-cart relative' href="#" onClick={openMiniCart}>
+      <Link className='md:hidden mr-4 nav-link shop-cart relative' href="#" onClick={() => console.log('openMiniCart')}>
         <FaShoppingCart/>
-        {total_items > 0 
+        {/* {total_items > 0 
          ? <span className="absolute inset-0 object-right-top ml-2 -mt-4">
           <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-amber-500 text-black">
             {total_items}
           </div>
         </span>
-        : '' }
+        : '' } */}
       </Link>
       <select
             onChange={(e) => handleLocaleChange(e.target.value)}

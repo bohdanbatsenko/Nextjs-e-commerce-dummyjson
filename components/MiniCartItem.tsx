@@ -1,6 +1,6 @@
 'use client';
 
-import AmountButtons from "./AmountButtons";
+import AmountButtons from "./QuantityButtons";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartContext } from '@/context/cart_context';

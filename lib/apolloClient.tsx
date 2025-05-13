@@ -8,18 +8,20 @@ import {
   ApolloClient,
   SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support";
-
+import possibleTypes from './data/possibleTypes.json';
 
 let apolloClient;
 
 function makeClient() {
   const httpLink = new HttpLink({
-    uri: "https://m2.test/graphql",
+    uri: "https://magento.test/graphql",
     fetchOptions: { cache: "no-store" },
   });
 
   return new ApolloClient({
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      possibleTypes
+    }),
     link:
       typeof window === "undefined"
         ? ApolloLink.from([

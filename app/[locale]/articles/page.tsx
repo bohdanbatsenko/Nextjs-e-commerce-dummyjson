@@ -9,9 +9,10 @@ import { draftMode } from "next/headers";
 import { createTranslation } from "@/app/i18n/server";
 import type { LocaleTypes } from "@/app/i18n/settings";
 
-const ArticlesPage = async ({ params }) => {
+const ArticlesPage = async props => {
+  const params = await props.params;
   const { t } = await createTranslation(params.locale as LocaleTypes, "common");
-  const { isEnabled } = draftMode();
+  const { isEnabled } = await draftMode();
   const articles = await getAllArticles(3, params.locale, false);
 
   return ( 

@@ -10,9 +10,10 @@ import Image from "next/image";
 import { createTranslation } from "@/app/i18n/server";
 import { LocaleTypes, locales } from "@/app/i18n/settings";
 
-export default async function HomePage({params}) {
+export default async function HomePage(props) {
+  const params = await props.params;
   const { t } = await createTranslation(params.locale as LocaleTypes, "common");
-  const { isEnabled } = draftMode();
+  const { isEnabled } = await draftMode();
   const articles = await getAllArticles(3, params.locale, false);
   const heroSlides = await getAllHeroSlides(params.locale);
 

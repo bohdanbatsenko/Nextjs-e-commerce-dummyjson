@@ -6,24 +6,38 @@ import { Product, MediaGalleryItem } from '@/types/product';
 import Breadcrumb from '@/components/Breadcrumb';
 import AddToCart from '@/components/AddToCart';
 import Stars from '@/components/Stars';
-import { useEffect, useState, Suspense, lazy, useContext } from 'react';
+import { useEffect, useState, Suspense, lazy, useContext, FC } from 'react';
 //import { useProductsContext } from "@/context/products_context";
 // Internationalization
 import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
 import { useSearchParams  } from 'next/navigation';
-import { useQuery } from '@apollo/client';
-import { GET_PRODUCT_DETAILS } from '@/lib/queries/getProductDetails';
+import { from, useQuery } from '@apollo/client';
+import { 
+  GET_PRODUCT_DETAILS, 
+  ProductDetailsType,
+  ProductDetailsResponseType,
+  ConfigurableProductVariant
+ } from '@/lib/queries/getProductDetails';
+import { ConfigurableProductOptions } from '@/components/products/options/ConfigurableProductOptions';
+import { SelectedConfigurableProductOptions, HandleSelectConfigurableOption } from '@/types/product';
+import type { PriceRange } from '@/lib/queries/getCategoryProducts';
+import type { MediaGalleryItemType } from '@/lib/queries/mediaGalleryFragment';
 
 function Loading() {
   return <p>Loading a product...</p>;
 }
 
-const Product = () => {
+const ProductPage: FC = () => {
   const searchParams = useSearchParams();
   const key = searchParams.get('key');
 
-  const [product, setProduct] = useState<Product | null>(null);
+  const [productData, setProductData] = useState<ProductDetailsType | null | undefined>(null);
+  const [selectedConfigurableProductOptions, setSelectedConfigurableProductOptions] = useState<SelectedConfigurableProductOptions>({})
+  const [selectedVariant, setSelectedVariant] = useState<ConfigurableProductVariant>(null)
+  const [price, setPrice] = useState<PriceRange | null>(null);
+  const [mediaGallery, setMediaGallery] = useState<MediaGalleryItemType[]>([]);
+
   const locale = useParams()?.locale as LocaleTypes;
   const { t } = useTranslation(locale, "common");
   const { data, loading, error } = useQuery(GET_PRODUCT_DETAILS, {
@@ -34,16 +48,71 @@ const Product = () => {
   useEffect(() => {
     if (data && data.products && data.products.items.length > 0) {
       //console.log('Data', data)
-      setProduct(data.products.items[0])
+      setProductData(data.products.items[0])
     }
   }, [data]);
 
-  const imagesGallery: MediaGalleryItem[] = product?.media_gallery ?? [];
+  useEffect(() => {
+    if (productData) {
+      if (selectedVariant) {
+        setPrice(selectedVariant.product.price_range);
+        setMediaGallery([...selectedVariant.product.media_gallery, ...productData.media_gallery]);
+      } else {
+        setPrice(productData.price_range);
+        setMediaGallery(productData.media_gallery);
+      }
+    }
+  },[selectedVariant, productData])
+
+  const findSelectProductVariant = (
+    selectedConfigurableProductOptions: SelectedConfigurableProductOptions,
+    productData: ProductDetailsType,
+  ): ConfigurableProductVariant | null => {
+    if (productData.__typename !== 'ConfigurableProduct') {
+      return null;
+    }
+    let variants = productData.variants;
+    Object.keys(selectedConfigurableProductOptions).forEach(code => {
+      variants = variants.filter((variant) => {
+        const attribute = variant.attributes.find(attr => attr.code === code);
+        return attribute?.value_index === selectedConfigurableProductOptions[code];
+      });
+    });
   
+    return variants?.[0];
+  };
+  
+  const imagesGallery: MediaGalleryItem[] = productData?.media_gallery ?? [];
+  
+  const renderOptions = () => {
+    if (data && data.products && data.products.items[0].__typename === 'ConfigurableProduct') {
+      return <ConfigurableProductOptions 
+        options={data.products.items[0].configurable_options}
+        handleSelectConfigurableOption={handleSelectConfigurableOption}
+        selectedConfigurableProductOptions={selectedConfigurableProductOptions}
+        />
+    }
+    return null;
+  }
+
+  const handleSelectConfigurableOption: HandleSelectConfigurableOption = (optionCode, valueIndex) => {
+    setSelectedConfigurableProductOptions((prevOptions) => ({
+      ...prevOptions,
+      [optionCode]: valueIndex
+    })
+    )
+  }
+
+  useEffect(() => {
+    if (productData && Object.keys(selectedConfigurableProductOptions).length > 0) {
+      const  variant = findSelectProductVariant(selectedConfigurableProductOptions, productData);
+      setSelectedVariant(variant)
+    }
+  }, [productData, selectedConfigurableProductOptions]);
 
   if (loading) return <Loading />;
   if (error) return <p>Error: {error.message}</p>;
-  console.log('Product', product)
+  console.log('ProductData', productData)
   // const priceData = product.price?.regularPrice?.amount;
   // const currency = "USD";
   // const value = priceData?.value;
@@ -55,23 +124,23 @@ const Product = () => {
   return (
     <main>
       <div className='px-10 lg:px-20 py-5'>
-        {product && (
+        {productData && (
           <Suspense fallback={<Loading />}>
-            <Breadcrumb products title={product.name} />
+            <Breadcrumb products title={productData.name} />
               <article>
                 <div className="p-6 lg:max-w-7xl max-w-2xl max-lg:mx-auto">
                 <div className="grid items-start grid-cols-1 lg:grid-cols-5 gap-12">
                   <div className="lg:col-span-3 flex flex-col justify-center items-center bg-gray-100 lg:sticky top-0 text-center center p-4">
                     {selectedImage ? 
-                    (<Image
+                    (<img
                       src={selectedImage} 
                       width={300}
                       height={280}
                       alt="Product" 
                       className=""
                     />) : (
-                      product?.media_gallery && product?.media_gallery.length > 0 ? (
-                        <Image src={product?.media_gallery[0]?.url} width={300} height={300} alt={product.name} />
+                      productData.media_gallery && productData.media_gallery.length > 0 ? (
+                        <img src={productData.media_gallery[0].url} width={300} height={300} alt={productData.name} />
                       ) : (<p>No images available</p>)
                       
                     )}
@@ -80,12 +149,12 @@ const Product = () => {
                       {imagesGallery ? 
                       (imagesGallery.map((image, index) => (
                         // <Image key={index} src={image} width={120} height={100} alt="Product" className="object-cover w-24 cursor-pointer" />
-                        <Image
+                        <img
                           key={index} 
                           src={image.url} 
                           width={120} 
                           height={100} 
-                          alt="Product" 
+                          alt={productData.name}
                           className="object-cover w-8 md:w-24 cursor-pointer" 
                           onClick={() => setSelectedImage(image.url)}
                         />
@@ -94,53 +163,61 @@ const Product = () => {
                   </div>
                   
                   <div className="lg:col-span-2">
-                    <h2 className="text-3xl font-extrabold text-gray-800">{product.name}</h2>
+                    <h2 className="text-3xl font-extrabold text-gray-800">{productData.name}</h2>
                     <div className="flex flex-wrap gap-4 mt-4">
                       <p className="text-gray-800 text-xl font-bold">
-                        ${product.price?.regularPrice?.amount.value}</p>
+                        ${productData.price?.regularPrice?.amount.value}</p>
+                      
                       <p className="text-gray-400 text-xl">
                       <span style={{ textDecoration: 'line-through' }}>
-                        ${product.price?.regularPrice?.amount.value}</span>
+                        ${productData.price?.regularDataPrice?.amount.value}</span>
                         <span className="text-sm ml-1">{t("shop.productDetails.taxIncluded")}</span>
                       </p>
                       <p className="text-black text-xl">15%
                         <span className="text-sm ml-1">{t("shop.productDetails.discount")}</span>
                         </p>
                     </div>
+                    <div className="flex flex-wrap gap-4 mt-4 flex-grow border-t border-gray-300">
+                    <hr className=""/>
+                      <div className="px-15">
+                        {renderOptions()}
+                      </div>
+
+                    </div>
                     <div className="flex gap-4 space-x-2 mt-4">
                       <div className="">
                         <span className="text-sm">SKU:</span>
-                        <h3 className="text-sm font-bold text-gray-800 capitalize">{product.sku}</h3>
+                        <h3 className="text-sm font-bold text-gray-800 capitalize">{productData.sku}</h3>
                       </div>
                       <div className="">
                         <span className="text-sm">{t("shop.productDetails.category")}:</span>
                         <h3 className="text-sm font-bold text-gray-800 capitalize">
-                          {product.categories.map((c, index) => (
+                          {productData.categories.map((c, index) => (
                             <span key={index} className='mr-2'>{c.name}</span>
                         ))}</h3>
                       </div>
                       <div className="">
                         <span className="text-sm">{t("shop.productDetails.stock")}:</span>
                         <h3 className="text-sm font-bold text-gray-800 capitalize">
-                          {product?.stock_status?.replace("_", " ")}</h3>
+                          {productData?.stock_status?.replace("_", " ")}</h3>
                       </div>
                       <div className="">
                         <span className="text-sm">Type:</span>
-                        <h3 className="text-sm font-bold text-gray-800 capitalize">{product.__typename}</h3>
+                        <h3 className="text-sm font-bold text-gray-800 capitalize">{productData.__typename}</h3>
                       </div>
                     </div>
                     <div className="flex space-x-2 mt-4">
-                      <Stars ratingSummary={product.rating_summary} />
+                      <Stars ratingSummary={productData.rating_summary} />
                     </div>
 
                     <div className='mt-6 flex justify-between items-center'>
-                    <AddToCart product={product} />
+                    <AddToCart product={productData} selectedVariant={selectedVariant}/>
                 </div>
 
                 <div className="mt-8">
-                  <h3 className="text-lg font-bold text-gray-800">{t("shop.productDetails.about")} {product.name}</h3>
+                  <h3 className="text-lg font-bold text-gray-800">{t("shop.productDetails.about")} {productData.name}</h3>
                   <ul className="space-y-3 list-disc mt-4 pl-4 text-sm text-gray-800">
-                    <li dangerouslySetInnerHTML={{ __html: product.description?.html }} />
+                    <li dangerouslySetInnerHTML={{ __html: productData.description?.html }} />
                   </ul>
                 </div>
 
@@ -259,7 +336,7 @@ const Product = () => {
                       className="w-12 h-12 rounded-full border-2 border-white" 
                       width={100}
                       height={100}
-                      alt={product.name}
+                      alt={productData.name}
                       />
                     <div className="ml-3">
                       <h4 className="text-sm font-bold">John Doe</h4>
@@ -313,4 +390,4 @@ const Product = () => {
   );
 }
 
-export default Product;
+export default ProductPage;

@@ -1,7 +1,7 @@
 import {  toast } from 'react-toastify';
 
 export const toasterNotifier = () => {
-  const notifyAddedToCart = (item) => toast.success(`${item.title} added to cart!`, {
+  const notifyAddedToCart = (product) => toast.success(`${product.name} added to cart!`, {
     position: "top-center",
     autoClose: 2000,
     hideProgressBar: true,

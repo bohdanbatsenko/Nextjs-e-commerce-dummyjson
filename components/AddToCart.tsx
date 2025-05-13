@@ -3,47 +3,64 @@
 import { useParams } from 'next/navigation'
 import  { useState } from "react";
 import Button from "./Button";
-import AmountButtons from "./AmountButtons";
+import QuantityButtons from "./QuantityButtons";
 import { toasterNotifier } from '@/hooks/useToasterNotify';
-import { useCartContext } from "@/context/cart_context";
+//import { useCartContext } from "@/context/cart_context";
+import { useCart } from '@/hooks/useCart';
 // Internationalization
 import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
 
-const AddToCart = ({ product }) => {
+const AddToCart = ({ product, selectedVariant}) => {
   const locale = useParams()?.locale as LocaleTypes;
   const { t } = useTranslation(locale, "common");
   
-  const { addToCart, openMiniCart } = useCartContext();
+  //const { addToCart, openMiniCart } = useCartContext();
+  const { cartId, addProductLoading, addToCart } = useCart();
+  console.log('AddToCart CartId', cartId)
   const { notifyAddedToCart } = toasterNotifier()
-  const [amount, setAmount] = useState(1);
+  const [quantity, setQuantity] = useState(1);
 
   const increase = () => {
-    setAmount((oldAmount) => oldAmount + 1);
+    setQuantity((oldQuantity) => oldQuantity + 1);
   };
 
   const decrease = () => {
-    setAmount((oldAmount) => {
-      let newAmount = oldAmount - 1;
-      if (newAmount < 1) {
-        newAmount = 1;
+    setQuantity((oldQuantity) => {
+      let newQuantity = oldQuantity - 1;
+      if (newQuantity < 1) {
+        newQuantity = 1;
       }
-      return newAmount;
+      return newQuantity;
     });
   };
 
-  const handleAddToCart = (product, amount) => {
-    addToCart(product, amount)
+  const onAddToCart = (product, quantity) => {
+    const sku = product.sku;
+    if (product?.__typename === 'SimpleProduct') {
+      addToCart({
+        sku: product.sku,
+        quantity: 1
+      }, product.name)
+    } else if (product?.__typename === 'ConfigurableProduct' && selectedVariant) {
+      addToCart({
+        parent_sku: product.sku,
+        sku: selectedVariant.product.sku,
+        quantity: 1
+      }, product.name)
+    }
+
     notifyAddedToCart(product)
-    openMiniCart()
+    //openMiniCart()
+    console.log('Product name', product)
   }
 
   return (
     <>
-      <AmountButtons amount={amount} increase={increase} decrease={decrease} />
+      <QuantityButtons quantity={quantity} increase={increase} decrease={decrease} />
       <Button
         onClick={() => 
-          handleAddToCart(product, amount)
+          onAddToCart(product, quantity)
         }>
         {t("shop.addToCart")}
       </Button>

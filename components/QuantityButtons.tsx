@@ -1,7 +1,7 @@
 'use client';
 import Button from "./Button";
 
-const AmountButtons = ({ increase, decrease, amount }) => {
+const QuantityButtons = ({ increase, decrease, quantity }) => {
   return (
     <div className="flex gap-4">
       <Button
@@ -9,7 +9,8 @@ const AmountButtons = ({ increase, decrease, amount }) => {
       >
         <span>-</span>
       </Button>
-      <span>{amount}</span>
+      <span>{quantity}</span>
+      
       <Button 
         onClick={increase}>
         <span>+</span>
@@ -19,4 +20,4 @@ const AmountButtons = ({ increase, decrease, amount }) => {
 };
 
 
-export default AmountButtons;
+export default QuantityButtons;

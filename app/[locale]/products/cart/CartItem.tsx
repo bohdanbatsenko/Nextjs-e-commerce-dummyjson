@@ -3,7 +3,7 @@
 import { useCartContext } from '@/context/cart_context';
 import Link from 'next/link';
 import Image from 'next/image';
-import AmountButtons from '@/components/AmountButtons';
+import AmountButtons from '@/components/QuantityButtons';
 import Button from '@/components/Button';
 import { FaTrash } from "react-icons/fa";
 

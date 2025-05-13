@@ -4,7 +4,8 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FaRegTimesCircle } from "react-icons/fa";
-import { useCartContext } from '@/context/cart_context';
+import { useCart } from '@/hooks/useCart';
+//import { useCartContext } from '@/context/cart_context';
 import MiniCartItem from './MiniCartItem';
 // Internationalization
 import { useTranslation } from "@/app/i18n/client";
@@ -14,8 +15,13 @@ const MiniCart = () => {
   const locale = useParams()?.locale as LocaleTypes;
   const { t } = useTranslation(locale, "common");
   const [ isClient, setIsClient ] = useState(false)
-  const { cart, total_items, total_price, isMiniCartOpen, closeMiniCart } = useCartContext();
-  
+  //const { cart, total_items, total_price, isMiniCartOpen, closeMiniCart } = useCartContext();
+    const { 
+      cartId,     
+      openMiniCart,
+      closeMiniCart,
+      isMiniCartOpen } = useCart();
+      
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -53,9 +59,9 @@ const MiniCart = () => {
             <div className="mt-8">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {isClient && cart && cart.length ? cart.map((product) => (
+                  {/* {isClient && cart && cart.length ? cart.map((product) => (
                       <MiniCartItem key={product.id} product={product}/>
-                  )) : (<div>{t("header.miniCart.noItemsMsg")}</div>)}
+                  )) : (<div>{t("header.miniCart.noItemsMsg")}</div>)} */}
                 </ul>
               </div>
             </div>
@@ -63,7 +69,7 @@ const MiniCart = () => {
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between text-base font-medium text-gray-900">
               <p>{t("header.miniCart.subTotal")}</p>
-              <p>${total_price}</p>
+              {/* <p>${total_price}</p> */}
             </div>
             <p className="mt-0.5 text-sm text-gray-500">{t("header.miniCart.miniCartMsg")}</p>
             <div className="mt-6">

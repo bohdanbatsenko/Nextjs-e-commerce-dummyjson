@@ -10,3 +10,10 @@ export const MEDIA_GALLERY_FRAGMENT = gql`
     }
   }
 `;
+
+export type MediaGalleryItemType = {
+  disabled: Boolean,
+  label: String,
+  position: Number,
+  url: String
+}
