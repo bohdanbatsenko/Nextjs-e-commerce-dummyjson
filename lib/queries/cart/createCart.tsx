@@ -6,6 +6,6 @@ export const CREATE_CART = gql`
   }
 `
 
-export type createCartResponseType = {
+export type CreateCartResponseType = {
   cartId: string;
 }

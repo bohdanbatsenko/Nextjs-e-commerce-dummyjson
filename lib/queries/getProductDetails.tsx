@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { MEDIA_GALLERY_FRAGMENT } from './mediaGalleryFragment';
 import { PRODUCT_PRICE_FRAGMENT } from './productPriceFragment';
 import { MediaGalleryItemType } from './mediaGalleryFragment';
-import { PriceRange } from './getCategoryProducts'
+import { PriceRange } from './getCategoryProducts';
 
 export const GET_PRODUCT_DETAILS = gql`
   query getProductDetailsQuery($url_key: String!) {
@@ -96,7 +96,7 @@ export type SimpleProductDetailsType = ProductInterfaceDetailsType & {
 
 export type ConfigurableProductOptionValueType =  {
   label: string,
-  //value_index: number;
+  value_index: number;
   uid: string;
   swatch_data: {
     value: string;

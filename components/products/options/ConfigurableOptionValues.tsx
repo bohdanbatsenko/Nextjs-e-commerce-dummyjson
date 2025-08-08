@@ -18,7 +18,7 @@ export const ConfigurableOptionValues = ({
   //const [selectedIndex, setSelectedIndex] = useState(-1);
   const renderValue = (value: ConfigurableProductOptionValueType, index:number) => {
     const selected = selectedIndex === index;
-
+    //console.log('selected',selected)
     switch (value.swatch_data.__typename) {
       case 'ColorSwatchData': {
         return (
@@ -56,7 +56,7 @@ export const ConfigurableOptionValues = ({
               type="button"
                className='flex justify-center items-center text-black inline-flex w-12 h-12 mr-2 border-2 border-black'
                style={{background: selected ? 'black' : 'white'}}
-              onClick={() => handleSelectConfigurableOption(optionCode, index)}
+               onClick={() => handleSelectConfigurableOption(optionCode, index)}
              >
               <span 
                 className='flex'

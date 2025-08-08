@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { MEDIA_GALLERY_FRAGMENT } from './mediaGalleryFragment';
+import { PRODUCT_PRICE_FRAGMENT } from './productPriceFragment'; 
 
 export const GET_PRODUCTS = gql`
   query getProductsQuery {
@@ -18,13 +19,7 @@ export const GET_PRODUCTS = gql`
             html
           }
           sku
-          price_range {
-            minimum_price {
-              final_price {
-                value
-              }
-            }
-          }
+          ...ProductPrice
           image {
             url
           }
@@ -41,4 +36,5 @@ export const GET_PRODUCTS = gql`
       }
     }
     ${MEDIA_GALLERY_FRAGMENT}
+    ${PRODUCT_PRICE_FRAGMENT}
 `;

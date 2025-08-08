@@ -3,10 +3,10 @@
 import AmountButtons from "./QuantityButtons";
 import Image from "next/image";
 import Link from "next/link";
-import { useCartContext } from '@/context/cart_context';
+//import { useCartContext } from '@/context/cart_context';
 
 const MiniCartItem = ({product}) => {
-  const { toggleAmount, removeItem } = useCartContext();
+  //const { toggleAmount, removeItem } = useCartContext();
   
   return (
     <li key={product.id} className="flex py-6">

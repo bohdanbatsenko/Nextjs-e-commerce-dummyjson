@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FaRegTimesCircle } from "react-icons/fa";
 import { useCart } from '@/hooks/useCart';
-//import { useCartContext } from '@/context/cart_context';
+import { useSelector } from 'react-redux';
+// import { getCartItems } from '@/redux/cart';
+import { useCartDetails } from '@/hooks/useCartDetails';
 import MiniCartItem from './MiniCartItem';
 // Internationalization
 import { useTranslation } from "@/app/i18n/client";
@@ -15,13 +17,17 @@ const MiniCart = () => {
   const locale = useParams()?.locale as LocaleTypes;
   const { t } = useTranslation(locale, "common");
   const [ isClient, setIsClient ] = useState(false)
-  //const { cart, total_items, total_price, isMiniCartOpen, closeMiniCart } = useCartContext();
-    const { 
-      cartId,     
-      openMiniCart,
-      closeMiniCart,
-      isMiniCartOpen } = useCart();
-      
+
+  const {getCartDetails, cartItems, loading} = useCartDetails();
+  const { 
+    cartId,     
+    openMiniCart,
+    closeMiniCart,
+    isMiniCartOpen } = useCart();    
+
+  // const cartItems = useSelector(getCartItems);
+
+
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -59,9 +65,9 @@ const MiniCart = () => {
             <div className="mt-8">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {/* {isClient && cart && cart.length ? cart.map((product) => (
-                      <MiniCartItem key={product.id} product={product}/>
-                  )) : (<div>{t("header.miniCart.noItemsMsg")}</div>)} */}
+                  {/* {cartItems.map(item => (
+                    <li key={item.sku}>{item.name} - {item.quantity}</li>
+                  ))} */}
                 </ul>
               </div>
             </div>

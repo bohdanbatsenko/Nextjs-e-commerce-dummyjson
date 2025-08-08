@@ -4,11 +4,13 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Product, MediaGalleryItem } from '@/types/product';
 import Breadcrumb from '@/components/Breadcrumb';
-import AddToCart from '@/components/AddToCart';
+import Button from "@/components/Button";
+import QuantityButtons from "@/components/QuantityButtons";
+import { toasterNotifier } from '@/hooks/useToasterNotify';
+// import AddToCart from '@/components/AddToCart';
 import Stars from '@/components/Stars';
-import { useEffect, useState, Suspense, lazy, useContext, FC } from 'react';
-//import { useProductsContext } from "@/context/products_context";
-// Internationalization
+import { useEffect, useState, Suspense, lazy, FC } from 'react';
+
 import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
 import { useSearchParams  } from 'next/navigation';
@@ -19,10 +21,16 @@ import {
   ProductDetailsResponseType,
   ConfigurableProductVariant
  } from '@/lib/queries/getProductDetails';
-import { ConfigurableProductOptions } from '@/components/products/options/ConfigurableProductOptions';
+//import { ConfigurableProductOptions } from '@/components/products/options/ConfigurableProductOptions';
 import { SelectedConfigurableProductOptions, HandleSelectConfigurableOption } from '@/types/product';
 import type { PriceRange } from '@/lib/queries/getCategoryProducts';
 import type { MediaGalleryItemType } from '@/lib/queries/mediaGalleryFragment';
+import { useCart } from '@/hooks/useCart';
+
+
+import { useProductDetails } from '@/hooks/useProductDetails';
+import { priceStringFromPriceRange } from '@/utils/price';
+import { ConfigurableProductOptions } from '@/components/products/options/ConfigurableProductOptions';
 
 function Loading() {
   return <p>Loading a product...</p>;
@@ -30,96 +38,233 @@ function Loading() {
 
 const ProductPage: FC = () => {
   const searchParams = useSearchParams();
-  const key = searchParams.get('key');
-
-  const [productData, setProductData] = useState<ProductDetailsType | null | undefined>(null);
-  const [selectedConfigurableProductOptions, setSelectedConfigurableProductOptions] = useState<SelectedConfigurableProductOptions>({})
-  const [selectedVariant, setSelectedVariant] = useState<ConfigurableProductVariant>(null)
-  const [price, setPrice] = useState<PriceRange | null>(null);
-  const [mediaGallery, setMediaGallery] = useState<MediaGalleryItemType[]>([]);
-
+  const urlKey = searchParams.get('key');
   const locale = useParams()?.locale as LocaleTypes;
   const { t } = useTranslation(locale, "common");
-  const { data, loading, error } = useQuery(GET_PRODUCT_DETAILS, {
-    variables: { url_key: key }
-  });
+  
   const [selectedImage, setSelectedImage] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const { notifyAddedToCart } = toasterNotifier();
 
-  useEffect(() => {
-    if (data && data.products && data.products.items.length > 0) {
-      //console.log('Data', data)
-      setProductData(data.products.items[0])
-    }
-  }, [data]);
+  const { cartId, addProductLoading, addToCart, openMiniCart, closeMiniCart} = useCart();
 
-  useEffect(() => {
-    if (productData) {
-      if (selectedVariant) {
-        setPrice(selectedVariant.product.price_range);
-        setMediaGallery([...selectedVariant.product.media_gallery, ...productData.media_gallery]);
-      } else {
-        setPrice(productData.price_range);
-        setMediaGallery(productData.media_gallery);
-      }
-    }
-  },[selectedVariant, productData])
-
-  const findSelectProductVariant = (
-    selectedConfigurableProductOptions: SelectedConfigurableProductOptions,
-    productData: ProductDetailsType,
-  ): ConfigurableProductVariant | null => {
-    if (productData.__typename !== 'ConfigurableProduct') {
-      return null;
-    }
-    let variants = productData.variants;
-    Object.keys(selectedConfigurableProductOptions).forEach(code => {
-      variants = variants.filter((variant) => {
-        const attribute = variant.attributes.find(attr => attr.code === code);
-        return attribute?.value_index === selectedConfigurableProductOptions[code];
-      });
-    });
-  
-    return variants?.[0];
+  const increase = () => {
+    setQuantity((oldQuantity) => oldQuantity + 1);
   };
-  
-  const imagesGallery: MediaGalleryItem[] = productData?.media_gallery ?? [];
-  
-  const renderOptions = () => {
-    if (data && data.products && data.products.items[0].__typename === 'ConfigurableProduct') {
-      return <ConfigurableProductOptions 
-        options={data.products.items[0].configurable_options}
-        handleSelectConfigurableOption={handleSelectConfigurableOption}
-        selectedConfigurableProductOptions={selectedConfigurableProductOptions}
-        />
-    }
-    return null;
-  }
 
-  const handleSelectConfigurableOption: HandleSelectConfigurableOption = (optionCode, valueIndex) => {
-    setSelectedConfigurableProductOptions((prevOptions) => ({
-      ...prevOptions,
-      [optionCode]: valueIndex
-    })
-    )
-  }
+  const decrease = () => {
+    setQuantity((oldQuantity) => {
+      let newQuantity = oldQuantity - 1;
+      if (newQuantity < 1) {
+        newQuantity = 1;
+      }
+      return newQuantity;
+    });
+  };
+
+  const {
+    getProductDetails,
+    loading,
+    productData,
+    selectedConfigurableProductOptions,
+    handleSelectConfigurableOption,
+    mediaGallery,
+    price,
+    selectedVariant,
+    // addToCart,
+    // addProductLoading,
+  } = useProductDetails({
+    url_key: urlKey,
+  });
+
 
   useEffect(() => {
-    if (productData && Object.keys(selectedConfigurableProductOptions).length > 0) {
-      const  variant = findSelectProductVariant(selectedConfigurableProductOptions, productData);
-      setSelectedVariant(variant)
+    if (urlKey) {
+      getProductDetails();
     }
-  }, [productData, selectedConfigurableProductOptions]);
+  }, []); 
 
-  if (loading) return <Loading />;
-  if (error) return <p>Error: {error.message}</p>;
-  console.log('ProductData', productData)
-  // const priceData = product.price?.regularPrice?.amount;
-  // const currency = "USD";
-  // const value = priceData?.value;
-  // const price = value?.toLocaleString("en-US", {
-  //   style: "currency",
-  //   currency,
+  const onAddToCart = () => {
+    console.log('add to cart')
+    if (!cartId) {
+      console.error('Cart ID is not available. Cannot add product to cart.');
+      return;
+    }
+    
+    const sku = productData.sku;
+    
+    if (productData?.__typename === 'SimpleProduct') {
+      addToCart({
+        sku,
+        quantity: quantity
+      }, productData)
+      console.log('product simple', productData)
+    } else if (productData?.__typename === 'ConfigurableProduct' && selectedVariant) {
+      console.log('selectedVariant', selectedVariant)
+      addToCart({
+        parent_sku: sku,
+        sku: selectedVariant.product.sku,
+        quantity: quantity
+      }, productData)
+      // console.log('product configurable', productData)
+    }
+
+    notifyAddedToCart(productData)
+    openMiniCart()
+  };
+
+  if (loading) {
+    return <p>Loading a product...</p>;
+  }
+
+  const renderOptions = () => {
+    if (productData?.__typename === 'ConfigurableProduct') {
+      return (
+        <ConfigurableProductOptions
+          options={productData.configurable_options}
+          handleSelectConfigurableOption={handleSelectConfigurableOption}
+          selectedConfigurableProductOptions={selectedConfigurableProductOptions}
+        />
+      );
+      
+    }
+    
+    return null;
+  };
+
+
+
+
+  // const [productData, setProductData] = useState<ProductDetailsType | null | undefined>(null);
+  // const { notifyAddedToCart } = toasterNotifier()
+  // const [quantity, setQuantity] = useState(1);
+
+  // const [selectedConfigurableProductOptions, setSelectedConfigurableProductOptions] = useState<SelectedConfigurableProductOptions>({})
+  // const [selectedVariant, setSelectedVariant] = useState<ConfigurableProductVariant>(null)
+  // const [price, setPrice] = useState<PriceRange | null>(null);
+  // const [mediaGallery, setMediaGallery] = useState<MediaGalleryItemType[]>([]);
+  // const { cartId, addProductLoading, addToCart, openMiniCart, closeMiniCart} = useCart();
+
+  // const locale = useParams()?.locale as LocaleTypes;
+  // const { t } = useTranslation(locale, "common");
+  // const { data, loading, error } = useQuery(GET_PRODUCT_DETAILS, {
+  //   variables: { url_key: key }
   // });
+  // const [selectedImage, setSelectedImage] = useState("");
+
+  // useEffect(() => {
+  //   if (data && data.products && data.products.items.length > 0) {
+  //     setProductData(data.products.items[0])
+  //   }
+  // }, [data]);
+
+  // useEffect(() => {
+  //   if (productData) {
+  //     if (selectedVariant) {
+  //       setPrice(selectedVariant.product.price_range);
+  //       setMediaGallery([...selectedVariant.product.media_gallery, ...productData.media_gallery]);
+  //     } else {
+  //       setPrice(productData.price_range);
+  //       setMediaGallery(productData.media_gallery);
+  //     }
+  //   }
+  // },[selectedVariant, productData])
+
+  // const findSelectProductVariant = (
+  //   selectedConfigurableProductOptions: SelectedConfigurableProductOptions,
+  //   productData: ProductDetailsType,
+  // ): ConfigurableProductVariant | null => {
+  //   if (productData.__typename !== 'ConfigurableProduct') {
+  //     return null;
+  //   }
+  //   let variants = productData.variants;
+  //   console.log('variants', variants)
+  //   Object.keys(selectedConfigurableProductOptions).forEach(code => {
+  //     variants = variants.filter((variant) => {
+  //       const attribute = variant.attributes.find(attr => attr.code === code);
+        
+  //       return attribute?.value_index === selectedConfigurableProductOptions[code];
+  //     });
+  //   });
+  
+  //   return variants?.[0];
+  // };
+  
+  //const imagesGallery: MediaGalleryItem[] = productData?.media_gallery ?? [];
+  
+//   const renderOptions = () => {
+//     if (data && data.products && data.products.items[0].__typename === 'ConfigurableProduct') {
+//       return <ConfigurableProductOptions 
+//         options={data.products.items[0].configurable_options}
+//         handleSelectConfigurableOption={handleSelectConfigurableOption}
+//         selectedConfigurableProductOptions={selectedConfigurableProductOptions}
+//         />
+//     }
+//     return null;
+//   }
+
+//   const handleSelectConfigurableOption: HandleSelectConfigurableOption = (optionCode, valueIndex) => {
+//     setSelectedConfigurableProductOptions((prevOptions) => ({
+//       ...prevOptions,
+//       [optionCode]: valueIndex
+//     })
+//     )
+//   }
+
+//   useEffect(() => {
+//     if (productData && Object.keys(selectedConfigurableProductOptions).length > 0) {
+//       const  variant = findSelectProductVariant(selectedConfigurableProductOptions, productData);
+//       setSelectedVariant(variant)
+//     }
+//   }, [productData, selectedConfigurableProductOptions]);
+
+//   if (loading) return <Loading />;
+//   if (error) return <p>Error: {error.message}</p>;
+
+// //  Add to cart
+//   const increase = () => {
+//     setQuantity((oldQuantity) => oldQuantity + 1);
+//   };
+
+//   const decrease = () => {
+//     setQuantity((oldQuantity) => {
+//       let newQuantity = oldQuantity - 1;
+//       if (newQuantity < 1) {
+//         newQuantity = 1;
+//       }
+//       return newQuantity;
+//     });
+//   };
+  
+// const onAddToCart = (productData, quantity) => {
+//   console.log('add to cart')
+//   console.log('cartId',cartId)
+//   console.log('productData?.__typename',productData?.__typename)
+//   console.log('productData',productData)
+//   console.log('selectedVariant',selectedVariant)
+//     if (!cartId) {
+//       console.error('Cart ID is not available. Cannot add product to cart.');
+//       return;
+//     }
+//     if (productData?.__typename === 'SimpleProduct') {
+//       addToCart({
+//         sku: productData.sku,
+//         quantity: quantity
+//       }, productData.name);
+//       console.log('SimpleProduct', productData);
+//     } else if (productData?.__typename === 'ConfigurableProduct' && selectedVariant) {
+//       addToCart({
+//         parent_sku: productData.sku,
+//         sku: selectedVariant.product.sku,
+//         quantity: quantity
+//       }, productData.name);
+//       console.log('ConfigurableProduct', productData);
+//     }
+
+//     notifyAddedToCart(productData);
+//     openMiniCart();
+//   };
+
 
   return (
     <main>
@@ -139,15 +284,15 @@ const ProductPage: FC = () => {
                       alt="Product" 
                       className=""
                     />) : (
-                      productData.media_gallery && productData.media_gallery.length > 0 ? (
-                        <img src={productData.media_gallery[0].url} width={300} height={300} alt={productData.name} />
+                      mediaGallery && mediaGallery.length > 0 ? (
+                        <img src={mediaGallery[0].url} width={300} height={300} alt={productData.name} />
                       ) : (<p>No images available</p>)
                       
                     )}
                     <hr className="border-white border-2 my-6" />
                     <div className="flex flex-wrap gap-x-12 gap-y-6 justify-center mx-auto">
-                      {imagesGallery ? 
-                      (imagesGallery.map((image, index) => (
+                      {mediaGallery ? 
+                      (mediaGallery.map((image, index) => (
                         // <Image key={index} src={image} width={120} height={100} alt="Product" className="object-cover w-24 cursor-pointer" />
                         <img
                           key={index} 
@@ -211,7 +356,21 @@ const ProductPage: FC = () => {
                     </div>
 
                     <div className='mt-6 flex justify-between items-center'>
-                    <AddToCart product={productData} selectedVariant={selectedVariant}/>
+                      <QuantityButtons quantity={quantity} increase={increase} decrease={decrease} />
+                      <Button
+                        onClick={onAddToCart}
+                        disabled={addProductLoading}>
+                        {t("shop.addToCart")}
+                      </Button>
+                    {/* <AddToCart product={productData}/> */}
+                          {/* <QuantityButtons quantity={quantity} increase={increase} decrease={decrease} /> */}
+                          {/* <Button
+                            onClick={() => 
+                              onAddToCart()
+                            }
+                            disabled={addProductLoading}>
+                            {t("shop.addToCart")}
+                          </Button> */}
                 </div>
 
                 <div className="mt-8">

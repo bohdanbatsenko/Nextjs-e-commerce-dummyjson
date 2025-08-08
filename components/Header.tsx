@@ -101,9 +101,10 @@ const Header = () => {
       <nav className='nav'>
         <ul className='hidden md:flex md:items-center'>
           <Link className={`nav-link ${pathname === '/' ? 'active' : ''}`} href="/">{t("header.mainNav.home")}</Link>
+          <Link className={`nav-link ${pathname === '/categories' ? 'active' : ''}`} href="/categories">Categories</Link>
           <Link className={`nav-link ${pathname === '/products' ? 'active' : ''}`} href="/products">{t("header.mainNav.shop")}</Link>
           <Link className={`nav-link ${pathname === '/articles' ? 'active' : ''}`} href="/articles">{t("header.mainNav.articles")}</Link>
-          <Link className='nav-link shop-cart relative' href="#" onClick={(e) => { e.preventDefault(); openMiniCart(); }}>
+          <Link className='nav-link shop-cart relative' href="/products/cart" onClick={openMiniCart}>
             <FaShoppingCart/>
             {/* {total_items > 0 
               ? <span className="absolute inset-0 object-right-top ml-8 -mt-3">
@@ -154,6 +155,11 @@ const Header = () => {
             <li
               className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
             >
+              <Link href="/categories" onClick={() => setNav(false)}>Categories</Link>
+            </li>
+            <li
+              className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
+            >
               <Link href="/products" onClick={() => setNav(false)}>{t("header.mainNav.shop")}</Link>
             </li>
             <li
@@ -169,7 +175,7 @@ const Header = () => {
           }}
         ></section>
       </div>
-      <Link className='md:hidden mr-4 nav-link shop-cart relative' href="#" onClick={() => console.log('openMiniCart')}>
+      <Link className='md:hidden mr-4 nav-link shop-cart relative' href="/products/cart" onClick={() => console.log('openMiniCart')}>
         <FaShoppingCart/>
         {/* {total_items > 0 
          ? <span className="absolute inset-0 object-right-top ml-2 -mt-4">

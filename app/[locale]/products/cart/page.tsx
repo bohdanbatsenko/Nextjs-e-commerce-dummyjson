@@ -1,5 +1,100 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+
+import Button from '@/components/Button';
+import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb';
+// import CartItem from './CartItem';
+// import CartTotals from './CartTotals';
+import EmptyCart from './EmptyCart';
+// New magento gql
+
+// Internationalization
+import { useTranslation } from "@/app/i18n/client";
+import type { LocaleTypes } from "@/app/i18n/settings";
+
+import CartDetailsListItem from './CartDetailsListItem';
+import { useCartDetails } from '@/hooks/useCartDetails';
+import { CartDetailItemType } from '@/lib/queries/cartItemsFragment';
+import { getPriceString } from '@/utils/price';
+
+
+const Cart = () => {
+  const locale = useParams()?.locale as LocaleTypes;
+  const { t } = useTranslation(locale, "common");
+  //const { cart, clearCart } = useCartContext();
+  const [removeItemUid, setRemoveItemUid] = useState('');
+  const {
+    getCartDetails,
+    loading,
+    cartItems,
+    totals,
+    removeFromCart,
+    removeItemLoading,
+  } = useCartDetails();
+
+  useEffect(() => {
+    getCartDetails();
+  }, [])
+  // const cartItems = useSelector(getCartItems);
+  console.log('cartItems', cartItems)
+
+  const onRemoveCartItemPress = (item) => {
+    setRemoveItemUid(item.uid);
+    removeFromCart(item.uid);
+  };
+
+  const renderCartItem = (item, index) => {
+    const isLast = cartItems.length - 1 === index;
+    return (
+      <CartDetailsListItem
+        key={item.product.sku}
+        removing={removeItemLoading && removeItemUid === item.uid}
+        index={index}
+        isLast={isLast}
+        onRemoveCartItemPress={() => onRemoveCartItemPress(item)}
+        item={item}
+      />
+    );
+  };
+
+  return (
+    <div className="container mx-auto">
+      <h1 className="px-4 mt-4 mb-10 text-5xl md:px-0 font-extralight">Shopping Cart</h1>
+      {cartItems.length <= 0 && <EmptyCart/> }
+
+    <div className="flex flex-col flex-1">
+      <div className="flex-1 overflow-y-auto">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          cartItems.map((item, index) => renderCartItem(item, index))
+        )}
+      </div>
+      <div className="bg-lightgray p-2.5">
+        {totals && (
+          <p className="my-2.5">{`Totals: ${getPriceString(totals?.grand_total)}`}</p>
+        )}
+        <button
+          disabled={loading}
+          className={`bg-black text-white w-80 h-12 flex items-center justify-center cursor-pointer ${
+            loading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+          }`}
+          onClick={() => {
+            console.log('router.push(routes.NAVIGATION_CHECKOUT_ROUTE)');
+          }}
+        >
+          Checkout
+        </button>
+      </div>
+    </div>
+    
+
+    </div>
+  );
+  
 // import React, { useEffect, useState } from "react";
 // import UpdateCartForm from "./cartUpdate";
 // import useCheckoutQuoteFetch, { useDeleteCartItem, useUpdateCartItem } from "@/hooks/useCart";
@@ -190,61 +285,42 @@
 //   );
 // }
 
-import { useParams } from 'next/navigation';
-import { useCartContext } from '@/context/cart_context';
-import Button from '@/components/Button';
-import Link from 'next/link';
-import Breadcrumb from '@/components/Breadcrumb';
-import CartItem from './CartItem';
-import CartTotals from './CartTotals';
-import EmptyCart from './EmptyCart';
-// New magento gql
-import { useCart } from '@/hooks/useCart';
-// Internationalization
-import { useTranslation } from "@/app/i18n/client";
-import type { LocaleTypes } from "@/app/i18n/settings";
 
-const Cart = () => {
-  const locale = useParams()?.locale as LocaleTypes;
-  const { t } = useTranslation(locale, "common");
-  const { cart, clearCart } = useCartContext();
 
-  const cartId = useCart();
-  console.log(cartId)
-  if (cart.length < 1) {
-    return <EmptyCart />;
-  }
 
-  return (
-    <main className='px-5 lg:px-20 py-5'>
-    <Breadcrumb title={t("shop.cart.cart")} />
-    <div className='grid md:grid-cols-3 mt-4 md:mt-8 lg:px-10 md:gap-6'>
-      <div className='cart-content grid gap-1 md:gap-2 md:col-span-2'>
-        <div className='cart__items p-2'>
-        {/* {!cart || cart.length < 1 
-        ? (<div>No items in cart</div>)
-        : cart.map((item, index) => (
-            <CartItem key={index} {...item} />
-          ))} */}
-          {cart && cart.map((item, index) => (
-            <CartItem key={index} {...item} />
-          ))}
-        </div>
-        <div className='cart__links flex items-center justify-between p-2'>
-          <Button>
-            <Link href='/products'>{t("shop.cart.buyMore")}</Link>
-          </Button>
-          <Button
-            onClick={clearCart}
-          >
-            {t("shop.cart.clearCart")}
-          </Button>
-        </div>
-      </div>
-      <CartTotals />
-    </div>
-  </main>
-  )
+
+  // return (
+  //   <main className='px-5 lg:px-20 py-5'>
+  //   <Breadcrumb title={t("shop.cart.cart")} />
+  //   <div className='grid md:grid-cols-3 mt-4 md:mt-8 lg:px-10 md:gap-6'>
+  //     <div className='cart-content grid gap-1 md:gap-2 md:col-span-2'>
+  //       <div className='cart__items p-2'>
+  //       {!cart || cart.length < 1 
+  //       ? (<div>No items in cart</div>)
+  //       : cart.map((item, index) => (
+  //           <CartItem key={index} {...item} />
+  //         ))}
+  //       <ul>
+  //         {cartItems.map(item => (
+  //           <li key={item.sku}>{item.name} - {item.quantity}</li>
+  //         ))}
+  //       </ul>
+  //       </div>
+  //       <div className='cart__links flex items-center justify-between p-2'>
+  //         <Button>
+  //           <Link href='/products'>{t("shop.cart.buyMore")}</Link>
+  //         </Button>
+  //         <Button
+  //           onClick={clearCart}
+  //         >
+  //           {t("shop.cart.clearCart")}
+  //         </Button>
+  //       </div>
+  //     </div>
+  //     <CartTotals />
+  //   </div>
+  // </main>
+  // )
 }
 
 export default Cart;

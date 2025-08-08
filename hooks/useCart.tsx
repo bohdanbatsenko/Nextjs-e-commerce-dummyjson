@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ApolloError, useMutation, FetchResult } from '@apollo/client';
-import { CREATE_CART, createCartResponseType} from '@/lib/queries/cart/createCart';
+import { CreateCartResponseType, CREATE_CART } from '@/lib/queries/cart/createCart';
 import { ADD_PRODUCTS_TO_CART, AddProductsToCartResponseType } from '@/lib/queries/cart/addProductsToCart';
 import { useDispatch, useSelector } from 'react-redux';
+//import { getCartId, setCartId, addItemToCart } from '@/redux/cart';
 import { getCartId, setCartId } from '@/redux/cart';
 
 type CartPayloadType = {
@@ -15,17 +16,42 @@ type Result = {
   cartId: string | null;
   addToCart: (payload: CartPayloadType, name: string) => Promise<void>;
   addProductLoading: boolean;
-  openMiniCart: () => void;
-  closeMiniCart: () => void;
-  isMiniCartOpen: boolean;
+  openMiniCart?: () => void;
+  closeMiniCart?: () => void;
+  isMiniCartOpen?: boolean;
 };
+
 export const useCart = (): Result => {
   //const [cartId, setCartId] = useState<String | null>(null);
   const cartId = useSelector(getCartId);
   const dispatch = useDispatch();
-  const [fetchCartId] = useMutation<createCartResponseType>(CREATE_CART);
-  const [AddProductsToCart, {loading: addProductLoading}] = useMutation<createCartResponseType>(ADD_PRODUCTS_TO_CART);
+
+  const [fetchCartId] = useMutation<CreateCartResponseType>(CREATE_CART);
+  // const [AddProductsToCart, {loading: addProductLoading}] = useMutation<CreateCartResponseType>(ADD_PRODUCTS_TO_CART);
+
+  // const [fetchCartId] = useMutation<CreateCartResponseType>(CREATE_CART,
+  //   {
+  //   onCompleted: (data) => {
+  //     if (data && data.createCart) {
+  //       dispatch(setCartId(data.createCart.cartId));
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.error('Error creating cart:', error);
+  //   }
+  // }
+  // );
+  
+  const [addProductsToCart, { loading: addProductLoading }] = useMutation<
+    AddProductsToCartResponseType
+  >(ADD_PRODUCTS_TO_CART, {
+        onError: (error) => {
+          console.error('Error adding product to cart:', error);
+        }
+    });
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
+
+
   const openMiniCart = () => {
     setIsMiniCartOpen(true);
   };
@@ -35,48 +61,46 @@ export const useCart = (): Result => {
   };
 
   const createCart = async() => {
-    //console.warn('createCart')
+    // console.log('useCart createCart');
     try {
       const { data, errors } = await fetchCartId();
-      console.log('useCart data',data);
+      
       dispatch(setCartId(data?.cartId));
     } catch (error) {
       console.log(error);
     }
-    // try {
-    //   const result: FetchResult<createCartResponseType> = await fetchCartId();
-      
-    //   if (result.data) {
-    //     dispatch(setCartId(result.data.cartId))
-    //   } else if (result.errors) {
-    //     console.error('GraphQL errors:', result.errors);
-    //   }
-    // } catch (error) {
-    //   console.error('Network error:', error);
-    // }
   }
 
   const addToCart = async (payload: CartPayloadType, name: string) => {
+ 
     try {
-      const { data, errors }: {
-        data: AddProductsToCartResponseType,
-        errors: ApolloError[]
-      } = await AddProductsToCart({
+      if (!cartId) {
+        await fetchCartId();
+      }
+      const { data, errors } = await addProductsToCart({
         variables: {
-          cartId,
-          ...payload
-
-        }
+           cartId,
+          // sku: payload.sku,
+          // quantity: payload.quantity,
+          // parent_sku: payload.parent_sku,
+          ...payload,
+        },
       });
-      console.log('useCart cart data 2', data)
-      console.log('useCart cart payload', payload)
-      console.log(errors)
-
-      //dispatch(setCartId(data?.cartId));
+      // console.log('data', data);
+      //dispatch(addItemToCart(payload));
+      if (errors) {
+        console.error('GraphQL errors:', errors);
+      }
+      if (errors || (data && data.addProductsToCart.user_errors.length > 0)) {
+        console.error('Failed to add products to cart:', errors || data.addProductsToCart.user_errors);
+      } else {
+        console.log('Product added to cart successfully');
+      }
+      
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     if (!cartId) {

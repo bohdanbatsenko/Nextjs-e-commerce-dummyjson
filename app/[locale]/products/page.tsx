@@ -2,12 +2,14 @@
 
 import { useParams } from 'next/navigation'
 import Breadcrumb from "@/components/Breadcrumb";
-import Filters from "@/components/Filters";
+// import Filters from "@/components/Filters";
 import Products from "./Products";
-import Sort from "@/components/Sort";
+// import Sort from "@/components/Sort";
+// import Categories from '../categories/page';
 // Internationalization
 import { useTranslation } from "@/app/i18n/client";
 import type { LocaleTypes } from "@/app/i18n/settings";
+
 
 const ProductsPage = () => {
   const locale = useParams()?.locale as LocaleTypes;
@@ -18,6 +20,8 @@ const ProductsPage = () => {
       <div className='px-10 lg:px-20 py-5'>
         <Breadcrumb title={t("breadcrumbs.products")}/>
         <h1 className='text-2xl uppercase font-bold mt-10 mb-10'>{t("shop.shop")}</h1> 
+        {/* <Categories /> */}
+
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-x-8 gap-y-10 lg:grid-cols-5 px-5 md:px-10 lg:px-20">
         {/* <Filters /> */}

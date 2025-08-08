@@ -1,6 +1,8 @@
 
 .swc/
 .*.env
+.env*.local
+_env.local
 
 # dependencies
 /node_modules
