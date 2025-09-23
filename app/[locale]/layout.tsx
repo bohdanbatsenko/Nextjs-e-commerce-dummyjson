@@ -15,6 +15,7 @@ import { ApolloWrapper } from "@/lib/apolloClient";
 //import { Provider } from 'react-redux';
 
 import StoreProvider from '@/redux/StoreProvider';
+import ClientSessionProvider from '@/components/ClientSessionProvider';
 
 
 export async function generateStaticParams() {
@@ -43,13 +44,16 @@ export default async function RootLayout(props: RootLayoutProps) {
 
   return (
     <StoreProvider>
+
       <ApolloWrapper>
      
         <ToastContainer />
         <Suspense fallback={<div>Loading...</div>}>
           <Header />
         </Suspense>
+        <ClientSessionProvider>
           {children}
+        </ClientSessionProvider>
         <Footer />
      
       {/* <ProductsProvider>
