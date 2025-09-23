@@ -104,6 +104,7 @@ const Header = () => {
           <Link className={`nav-link ${pathname === '/categories' ? 'active' : ''}`} href="/categories">Categories</Link>
           <Link className={`nav-link ${pathname === '/products' ? 'active' : ''}`} href="/products">{t("header.mainNav.shop")}</Link>
           <Link className={`nav-link ${pathname === '/articles' ? 'active' : ''}`} href="/articles">{t("header.mainNav.articles")}</Link>
+          <Link className={`nav-link ${pathname === '/auth/signin' ? 'active' : ''}`} href="/auth/signin">Signin</Link>
           <Link className='nav-link shop-cart relative' href="/products/cart" onClick={openMiniCart}>
             <FaShoppingCart/>
             {/* {total_items > 0 
