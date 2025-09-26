@@ -104,7 +104,7 @@ const Header = () => {
           <Link className={`nav-link ${pathname === '/categories' ? 'active' : ''}`} href="/categories">Categories</Link>
           <Link className={`nav-link ${pathname === '/products' ? 'active' : ''}`} href="/products">{t("header.mainNav.shop")}</Link>
           <Link className={`nav-link ${pathname === '/articles' ? 'active' : ''}`} href="/articles">{t("header.mainNav.articles")}</Link>
-          <Link className={`nav-link ${pathname === '/auth/signin' ? 'active' : ''}`} href="/auth/signin">Signin</Link>
+          <Link className={`nav-link ${pathname === '/auth/signin' ? 'active' : ''}`} href="/auth/signin">Account</Link>
           <Link className='nav-link shop-cart relative' href="/products/cart" onClick={openMiniCart}>
             <FaShoppingCart/>
             {/* {total_items > 0 
@@ -167,6 +167,11 @@ const Header = () => {
               className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
             >
               <Link href="/articles" onClick={() => setNav(false)}>{t("header.mainNav.articles")}</Link>
+            </li>
+            <li
+              className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
+            >
+              <Link href="/auth/signin" onClick={() => setNav(false)}>Account</Link>
             </li>
         </ul>
         <section
