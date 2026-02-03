@@ -3,6 +3,8 @@
 .*.env
 .env*.local
 _env.local
+.idea/
+.vscode/
 
 # dependencies
 /node_modules
